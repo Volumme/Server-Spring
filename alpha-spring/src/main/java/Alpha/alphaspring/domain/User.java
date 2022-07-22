@@ -1,27 +1,27 @@
 package Alpha.alphaspring.domain;
 
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.*;
+
+@Entity
 public class User {
-    private String id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String pw;
     private String name;
     private String gender;
     private String phone_number;
     private int age;
 
-    public User(String id, String pw, String name, String gender, String phone_number, int age) {
-        this.id = id;
-        this.pw = pw;
-        this.name = name;
-        this.gender = gender;
-        this.phone_number = phone_number;
-        this.age = age;
-    }
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

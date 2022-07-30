@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Member;
 import java.util.List;
 
-@Controller
+@RestController
 public class UserController {
 
     private final UserService userService;
@@ -24,5 +27,10 @@ public class UserController {
     public List<User> list(User user){
         List<User> users = userService.findUsers();
         return users;
+    }
+    @PostMapping("/users")
+    public void check_token(@RequestBody String accessToken){
+        System.out.println("AccessToken : ");
+        System.out.println(accessToken);
     }
 }

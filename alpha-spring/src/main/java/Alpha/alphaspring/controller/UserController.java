@@ -2,6 +2,7 @@ package Alpha.alphaspring.controller;
 
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.service.UserService;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -33,8 +34,14 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public void check_token(@RequestBody String accessToken){
-        System.out.println("AccessToken : ");
-        System.out.println(accessToken);
+    public void check_token(@RequestBody String data){
+        System.out.println("Token : ");
+        System.out.println(data);
+        try {
+            userService.store_token(data);
+        } catch (ParseException e) {
+            System.out.println("error! = " + e);
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Member;
@@ -35,4 +37,9 @@ public class UserController {
         return users;
     }
 
+    @PostMapping("/users")
+    public void check_token(@RequestBody String accessToken){
+        System.out.println("AccessToken : ");
+        System.out.println(accessToken);
+    }
 }

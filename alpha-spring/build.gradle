@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.webjars:webjars-locator-core'
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	implementation 'com.auth0:java-jwt:4.0.0'
+	implementation 'com.auth0:jwks-rsa:0.21.1'
 }
 
 tasks.named('test') {

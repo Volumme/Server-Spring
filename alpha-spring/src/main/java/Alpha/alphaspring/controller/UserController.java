@@ -2,6 +2,7 @@ package Alpha.alphaspring.controller;
 
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.service.UserService;
+import com.auth0.jwk.JwkException;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,13 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public void check_token(@RequestBody String data){
+    public boolean checkToken(@RequestBody String data){
         System.out.println("Token : ");
         System.out.println(data);
         try {
-            userService.store_token(data);
-        } catch (ParseException e) {
+            return userService.checkKakaoToken(data);
+
+        } catch (ParseException | JwkException e) {
             System.out.println("error! = " + e);
             throw new RuntimeException(e);
         }

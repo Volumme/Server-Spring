@@ -3,6 +3,10 @@ package Alpha.alphaspring.service;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.repository.UserRepository;
 
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkException;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.JwkProviderBuilder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -12,6 +16,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,19 +26,28 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Transactional
 @Service
+@PropertySource("classpath:application.properties")
 public class UserService {
 
-    private final String kakaoKey = "qGWf6RVzV2pM8YqJ6by5exoixIlTvdXDfYj2v7E6xkoYmesAjp_1IYL7rzhpUYqIkWX0P4wOwAsg-Ud8PcMHggfwUNPOcqgSk1hAIHr63zSlG8xatQb17q9LrWny2HWkUVEU30PxxHsLcuzmfhbRx8kOrNfJEirIuqSyWF_OBHeEgBgYjydd_c8vPo7IiH-pijZn4ZouPsEg7wtdIX3-0ZcXXDbFkaDaqClfqmVCLNBhg3DKYDQOoyWXrpFKUXUFuk2FTCqWaQJ0GniO4p_ppkYIf4zhlwUYfXZEhm8cBo6H2EgukntDbTgnoha8kNunTPekxWTDhE5wGAt6YpT4Yw";
-
     private HashMap<String, String> sessions = new HashMap<>();
-    @Autowired
-    private final UserRepository userRepository;
 
+    @Autowired
+    Environment env;
+
+    private final UserRepository userRepository;
+    private final JwkProvider kakaoProvider;
+
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.kakaoProvider = new JwkProviderBuilder("https://kauth.kakao.com")
+                .cached(10, 7, TimeUnit.DAYS) // 7일간 최대 10개 캐시
+                .build();
+
     }
 
     public List<User> findUsers(){
@@ -54,7 +69,7 @@ public class UserService {
         System.out.println("payload = " + payload);
     }
 
-    public boolean check_token(String token) throws ParseException {
+    public boolean checkKakaoToken(String token) throws ParseException, JwkException {
         // json token parsing
         JSONParser parser = new JSONParser();
         JSONObject tokenObj = (JSONObject) parser.parse(token);
@@ -83,11 +98,11 @@ public class UserService {
         String aud = (String) payloadObj.get("aud");
 
         //check aud
-        if (!"e5f9a7629df9bf988dac8d499f8559ea".equals(aud)) {
+        if (!env.getProperty("spring.kakao.nativeappkey").equals(aud)) {
+            System.out.println("env.getProperty(\"spring.kakao.nativeappkey\") = " + env.getProperty("spring.kakao.nativeappkey"));
             System.out.println("aud = " + aud);
             return false;
         }
-        
         //extract exp
         long exp = (long) payloadObj.get("exp");
         
@@ -99,22 +114,21 @@ public class UserService {
             return false;
         }
 
-        //decode header
-        decodedBytes = Base64.getDecoder().decode(jwt[0]);
-        String header = new String(decodedBytes);
+// 1. 검증없이 디코딩
 
-        //extract private key
+        DecodedJWT jwtOrigin = JWT.decode(idToken);
+        System.out.println("jwtOrigin = " + jwtOrigin.getToken());
 
-        //validate digital signature
-        RSAPublicKey publicKey = kakaoKey;
-        RSAPrivateKey privateKey =
-        try {
-            Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("auth0")
-                    .build(); //Reusable verifier instance
-            DecodedJWT jwt = verifier.verify(token);
-        } catch (JWTVerificationException exce
+// 2. 공개키 프로바이더 준비
+        Jwk jwk = kakaoProvider.get(jwtOrigin.getKeyId());
+
+// 3. 검증 및 디코딩
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
+        JWTVerifier verifier = JWT.require(algorithm)
+                .build();
+        DecodedJWT decodedJwt = verifier.verify(idToken);
+        System.out.println("decodedJwt = " + decodedJwt.getToken());
+        return true;
     }
 
 }

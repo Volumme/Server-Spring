@@ -1,40 +1,38 @@
 package Alpha.alphaspring.controller;
 
 import Alpha.alphaspring.domain.User;
-import Alpha.alphaspring.service.UserService;
+import Alpha.alphaspring.service.UserServiceImpl;
 import com.auth0.jwk.JwkException;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Member;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
     @GetMapping("/users")
-    public List<User> list(User user){
-        List<User> users = userService.findUsers();
-        return users;
+    public List<User> userList(User user){
+        try {
+            List<User> users = userService.findUsers();
+            return users;
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
-    @PostMapping("/users")
+    @PostMapping("/token")
     public boolean checkToken(@RequestBody String data){
         System.out.println("Token : ");
         System.out.println(data);
@@ -44,6 +42,34 @@ public class UserController {
         } catch (ParseException | JwkException e) {
             System.out.println("error! = " + e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/register")
+    public User registerUser(
+//            @RequestParam(value = "id") String userId,
+//            @RequestParam(required = false, value = "pw") String userPw,
+//            @RequestParam(required = false, value = "name") String userName,
+//            @RequestParam(required = false, value = "gender") String userGender,
+//            @RequestParam(required = false, value = "phone_number") String userPhoneNumber,
+//            @RequestParam(required = false, value = "age") int userAge
+            @RequestBody User user
+            ){
+//        userService.join(new User(userId, userPw, userName, userGender, userPhoneNumber, userAge));
+        System.out.println(user);
+
+        userService.join(user);
+        return user;
+    }
+
+    @GetMapping("/user")
+    public User findUserById(@RequestParam(value = "userId") String userId){
+        try {
+            return userService.findUser(userId);
+        }
+        catch (Exception e){
+            System.out.println("e = " + e);
+            return null;
         }
     }
 }

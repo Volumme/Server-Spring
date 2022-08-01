@@ -25,8 +25,8 @@ public class JpaUserRepository implements UserRepository{
     }
 
     @Override
-    public Optional<User> findById(String id) {
-        User user = em.find(User.class, id);
+    public Optional<User> findById(String userId) {
+        User user = em.find(User.class, userId);
         return Optional.ofNullable(user);
     }
 
@@ -34,6 +34,14 @@ public class JpaUserRepository implements UserRepository{
     public Optional<User> findByName(String name) {
         List<User> result = em.createQuery("select m from User m where m.name = :name",User.class)
                 .setParameter("name", name)
+                .getResultList();
+        return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByUserId(String userId) {
+        List<User> result = em.createQuery("select m from User m where m.userId = :userId",User.class)
+                .setParameter("userId", userId)
                 .getResultList();
         return result.stream().findAny();
     }

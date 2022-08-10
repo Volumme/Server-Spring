@@ -128,7 +128,9 @@ class LogIn extends StatelessWidget {
             ),
             child: RaisedButton(
               color: Colors.green,
-              onPressed: () {},
+              onPressed: () {
+                print(getRequest());
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const <Widget>[
@@ -138,7 +140,7 @@ class LogIn extends StatelessWidget {
                     color: Colors.white,
                   ),
                   Text(
-                    'Login with Email',
+                    'Get',
                     style: TextStyle(color: Colors.white, fontSize: 15.0),
                   ),
                   Opacity(

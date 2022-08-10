@@ -7,7 +7,7 @@ Future<http.Response> fetchAlbum() {
 
 Future<http.Response> postRequest(
     String accessToken, String refreshToken, String idToken) async {
-  Uri url = Uri.parse('http://10.0.2.2:8080/users');
+  Uri url = Uri.parse('http://43.200.120.78:8080/users');
 
   http.Response response = await http.post(
     url,
@@ -25,7 +25,7 @@ Future<http.Response> postRequest(
 }
 
 Future<http.Response> getRequest() async {
-  Uri url = Uri.parse('https://localhost:8080/users');
+  Uri url = Uri.parse('http://43.200.120.78:8080/users');
 
   http.Response response = await http.post(
     url,

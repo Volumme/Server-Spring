@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,20 +17,27 @@ import javax.persistence.*;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "user_id")
     private String userId;
-    @Column
+
+    @Column(name = "pw")
     private String pw;
-    @Column
+
+    @Column(name = "name")
     private String name;
-    @Column
+
+    @Column(name = "gender")
     private String gender;
+
     @Column(name = "phone_number")
     private String phoneNumber;
-    @Column
+
+    @Column(name = "age")
     private Long age;
 
-//    public String getName() {
-//        return name;
-//    }
+//    @OneToMany(mappedBy = "user")
+//    List<Routine> routines = new ArrayList<>();
 }
+
+

@@ -50,9 +50,10 @@ public class UserServiceImpl implements UserService{
 
     }
 
+    //
     public List<User> findUsers() throws Exception {
         if (userRepository.findAll().isEmpty()){
-            throw new Exception("ohlcv result set null");
+            throw new Exception("result set null");
         }
         return userRepository.findAll();
     }

@@ -21,6 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public String home(){
+        return "SERVER RUNNING!!";
+    }
+
     @GetMapping("/users")
     public List<User> userList(User user){
         try {

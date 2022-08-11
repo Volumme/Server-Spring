@@ -9,17 +9,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
+// 이거 바꾸면 UserDetailsServiceImpl 빌더 바꿔 주기
 @Getter
 @Setter
 @Entity
-//@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id")
     private String userId;
+
+    @Column(name = "provider")
+    private String provider;
 
     @Column(name = "pw")
     private String pw;

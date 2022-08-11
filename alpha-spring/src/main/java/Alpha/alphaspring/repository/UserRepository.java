@@ -12,4 +12,6 @@ public interface UserRepository {
     Optional<User> findByName(String name);
     List<User> findAll();
     Optional<User> findByUserId(String userId);
+
+    Optional<User> findByUserIdAndProvider(String userId, String provider);
 }

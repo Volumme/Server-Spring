@@ -5,6 +5,8 @@ import Alpha.alphaspring.domain.User;
 import java.util.List;
 import java.util.Optional;
 
+// 비지니스 로직 구현
+
 public interface UserService {
     // register user
     void join(User user);

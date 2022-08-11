@@ -32,7 +32,7 @@ public class JpaUserRepository implements UserRepository{
 
     @Override
     public Optional<User> findByName(String name) {
-        List<User> result = em.createQuery("select m from User m where m.name = :name",User.class)
+        List<User> result = em.createQuery("select m from User m where m.name = :name", User.class)
                 .setParameter("name", name)
                 .getResultList();
         return result.stream().findAny();
@@ -40,8 +40,17 @@ public class JpaUserRepository implements UserRepository{
 
     @Override
     public Optional<User> findByUserId(String userId) {
-        List<User> result = em.createQuery("select m from User m where m.userId = :userId",User.class)
+        List<User> result = em.createQuery("select m from User m where m.userId = :userId", User.class)
                 .setParameter("userId", userId)
+                .getResultList();
+        return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByUserIdAndProvider(String userId, String provider) {
+        List<User> result = em.createQuery("select m from User m where m.userId = :userId and m.provider = :provider", User.class)
+                .setParameter("userId", userId)
+                .setParameter("provider", provider)
                 .getResultList();
         return result.stream().findAny();
     }

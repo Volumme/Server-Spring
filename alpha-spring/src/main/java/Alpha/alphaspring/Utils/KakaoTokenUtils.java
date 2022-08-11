@@ -1,7 +1,4 @@
-package Alpha.alphaspring.service;
-
-import Alpha.alphaspring.domain.User;
-import Alpha.alphaspring.repository.UserRepository;
+package Alpha.alphaspring.Utils;
 
 import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkException;
@@ -15,73 +12,40 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Transactional
-@Service
-@PropertySource("classpath:application.properties")
-public class UserServiceImpl implements UserService{
+@Component
+public class KakaoTokenUtils implements TokenUtils{
 
-    private final HashMap<String, String> sessions = new HashMap<>();
-
-    // use env to get kakao native key from application.properties
     @Autowired
     Environment env;
 
-    private final UserRepository userRepository;
     private final JwkProvider kakaoProvider;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+
+    public KakaoTokenUtils() {
         this.kakaoProvider = new JwkProviderBuilder("https://kauth.kakao.com")
                 .cached(10, 7, TimeUnit.DAYS) // 7일간 최대 10개 캐시
                 .build();
     }
 
-    //
-    public List<User> findUsers() throws Exception {
-        if (userRepository.findAll().isEmpty()){
-            throw new Exception("result set null");
-        }
-        return userRepository.findAll();
-    }
 
-    public void store_token(String tokens) throws ParseException {
-
-        JSONParser parser = new JSONParser();
-        JSONObject tokenObj = (JSONObject) parser.parse(tokens);
-        String idToken = (String) tokenObj.get("IdToken");
-
-        String[] jwt = idToken.split("\\.");
-
-        byte[] decodedBytes = Base64.getDecoder().decode(jwt[1]);
-        String payload = new String(decodedBytes);
-
-//        sessions.put("", idToken);
-        System.out.println("payload = " + payload);
-    }
-
-    public boolean checkKakaoToken(String token) throws ParseException, JwkException {
+    @Override
+    public boolean validate(String token) throws ParseException, JwkException {
         // json token parsing
         JSONParser parser = new JSONParser();
-        JSONObject tokenObj = (JSONObject) parser.parse(token);
+//        JSONObject tokenObj = (JSONObject) parser.parse(token);
 
         // extract idtoken
-        String idToken = (String) tokenObj.get("IdToken");
+//        String idToken = (String) tokenObj.get("IdToken");
 
         //seperate token
-        String[] jwt = idToken.split("\\.");
+        String[] jwt = token.split("\\.");
 
         //decode payload -> json
         byte[] decodedBytes = Base64.getDecoder().decode(jwt[1]);
@@ -108,7 +72,7 @@ public class UserServiceImpl implements UserService{
         }
         //extract exp
         long exp = (long) payloadObj.get("exp");
-        
+
         //check exp
         long curTime = System.currentTimeMillis()/1000;
         if(curTime >= exp){
@@ -118,8 +82,7 @@ public class UserServiceImpl implements UserService{
         }
 
 // 1. 검증없이 디코딩
-
-        DecodedJWT jwtOrigin = JWT.decode(idToken);
+        DecodedJWT jwtOrigin = JWT.decode(token);
         System.out.println("jwtOrigin = " + jwtOrigin.getToken());
 
 // 2. 공개키 프로바이더 준비
@@ -129,18 +92,20 @@ public class UserServiceImpl implements UserService{
         Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
         JWTVerifier verifier = JWT.require(algorithm)
                 .build();
-        DecodedJWT decodedJwt = verifier.verify(idToken);
+        DecodedJWT decodedJwt = verifier.verify(token);
         System.out.println("decodedJwt = " + decodedJwt.getToken());
         return true;
     }
 
-    @Override
-    public void join(User user) {
-        userRepository.save(user);
-    }
+
 
     @Override
-    public User findUser(String userId) throws Exception {
-        return userRepository.findByUserId(userId).orElseThrow(() -> new Exception("ohlcv result set null"));
+    public OauthInfo getOauthInfo(String token) throws ParseException {
+        JSONParser parser = new JSONParser();
+        DecodedJWT jwtOrigin = JWT.decode(token);
+        String payload = jwtOrigin.getPayload();
+        JSONObject payloadObj = (JSONObject) parser.parse(payload);
+        String id = (String) payloadObj.get("sub");
+        return OauthInfo.builder().userId(id).provider("kakao").build();
     }
 }

@@ -50,7 +50,7 @@ class LogIn extends StatelessWidget {
                 OAuthToken? token = await signIn();
                 controller.setString(
                     token!.accessToken, token.refreshToken, token.idToken);
-                print("token : " + token.accessToken);
+                print("token : " + token.idToken.toString());
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

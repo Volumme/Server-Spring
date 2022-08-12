@@ -103,7 +103,9 @@ public class KakaoTokenUtils implements TokenUtils{
     public OauthInfo getOauthInfo(String token) throws ParseException {
         JSONParser parser = new JSONParser();
         DecodedJWT jwtOrigin = JWT.decode(token);
-        String payload = jwtOrigin.getPayload();
+        String payloadStr = jwtOrigin.getPayload();
+        byte[] decodedBytes = Base64.getDecoder().decode(payloadStr);
+        String payload = new String(decodedBytes);
         JSONObject payloadObj = (JSONObject) parser.parse(payload);
         String id = (String) payloadObj.get("sub");
         return OauthInfo.builder().userId(id).provider("kakao").build();

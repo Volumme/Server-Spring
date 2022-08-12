@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 
@@ -28,14 +29,16 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         JwtAuthenticationToken beforeToken = (JwtAuthenticationToken) authentication;
         String jwtToken = beforeToken.getToken();
+
         try {
-            if(tokenUtils.validate(jwtToken)){
+            if(!tokenUtils.validate(jwtToken)){
                 throw new RuntimeException("token not valid");
             }
             OauthInfo oauthInfo = tokenUtils.getOauthInfo(jwtToken);
             String userId = oauthInfo.getUserId();
             String provider = oauthInfo.getProvider();
             UserDetails user = userDetailsService.findUser(userId, provider);
+
             return new JwtAuthenticationToken(user, user.getAuthorities());
         } catch (Exception e) {
             throw new RuntimeException(e);

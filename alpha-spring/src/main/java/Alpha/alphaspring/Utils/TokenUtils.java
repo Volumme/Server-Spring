@@ -11,6 +11,7 @@ public interface TokenUtils {
     String getPayload(String token);
     String getJsonHeader(String token);
     String getJsonPayload(String token);
+    String getClaim(String token, String key, String scope) throws ParseException;
     boolean validate(String token) throws ParseException, JwkException;
     OauthInfo getOauthInfo(String token) throws ParseException;
 }

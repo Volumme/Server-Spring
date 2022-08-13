@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -23,30 +24,27 @@ import java.util.Arrays;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private JwtAuthenticationProvider authProvider;
+    private JwtAuthenticationProvider jwtProvider;
 
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(Arrays.asList(authProvider));
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider);
-
-    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
-        http.authorizeRequests()
+        // CORS 비활성화
+        // CSRF 비활성화
+        // JSESSION 비활성화
+        // 회원 가입을 제외한 모든 요청에 대해 인증 진행
+        // UsernamePasswordAuthenticationFilter 앞 단에 Jwt Handler Filter
+
+        http
+                .cors().disable()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
                 .antMatchers("/register").permitAll()
-                .and().addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class).httpBasic()
-                ;
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
     }
-
-
-
-
 
     @Override
     public void configure(WebSecurity web) throws Exception {

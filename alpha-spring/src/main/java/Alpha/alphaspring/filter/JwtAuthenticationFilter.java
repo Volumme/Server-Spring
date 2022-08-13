@@ -1,5 +1,8 @@
 package Alpha.alphaspring.filter;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -9,40 +12,27 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     final String AUTH_HEADER_NAME = "Authorization";
     final String BEARER_NAME = "Bearer";
 
-    protected JwtAuthenticationFilter(String defaultFilterProcessesUrl) {
-        super(defaultFilterProcessesUrl);
-    }
-
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-        super("/**", authenticationManager);
-    }
-    protected JwtAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
-        super(requiresAuthenticationRequestMatcher);
-    }
-
-    protected JwtAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
-        super(defaultFilterProcessesUrl, authenticationManager);
-    }
-
-    protected JwtAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher, AuthenticationManager authenticationManager) {
-        super(requiresAuthenticationRequestMatcher, authenticationManager);
-    }
+    final JwtAuthenticationProvider jwtProvider;
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AUTH_HEADER_NAME);
+        if (authHeader == null || authHeader.isEmpty()) throw new RuntimeException("Auth header does not exists");
+
         String[] authHeaderValue = authHeader.split(" ");
         if (authHeaderValue.length != 2){
             throw new RuntimeException("invalid auth header, require token");
@@ -52,8 +42,9 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         }
         String jwtToken = authHeaderValue[1];
 
-        Authentication authToken = new JwtAuthenticationToken(jwtToken);
+        Authentication authToken = this.jwtProvider.authenticate(new JwtAuthenticationToken(jwtToken));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        return this.getAuthenticationManager().authenticate(authToken);
+        filterChain.doFilter(request, response);
     }
 }

@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     final String AUTH_HEADER_NAME = "Authorization";
     final String BEARER_NAME = "Bearer";
 
-    final JwtAuthenticationProvider jwtProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
         String jwtToken = authHeaderValue[1];
 
-        Authentication authToken = this.jwtProvider.authenticate(new JwtAuthenticationToken(jwtToken));
+        Authentication authToken = this.authenticationManager.authenticate(new JwtAuthenticationToken(jwtToken));
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         chain.doFilter(request, response);

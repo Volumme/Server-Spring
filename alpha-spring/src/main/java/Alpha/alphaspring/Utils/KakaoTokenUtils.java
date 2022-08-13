@@ -29,7 +29,8 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
     private final JwkProvider kakaoProvider;
     private final String kakaoNativeAppKey;
 
-    public KakaoTokenUtils() {
+    public KakaoTokenUtils(Environment env) {
+        this.env = env;
         this.kakaoProvider = new JwkProviderBuilder("https://kauth.kakao.com")
                 .cached(10, 7, TimeUnit.DAYS) // 7일간 최대 10개 캐시
                 .build();

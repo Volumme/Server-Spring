@@ -9,11 +9,15 @@ import Alpha.alphaspring.service.UserServiceImpl;
 import com.auth0.jwk.JwkException;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Component
@@ -28,11 +32,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         JwtAuthenticationToken beforeToken = (JwtAuthenticationToken) authentication;
-        String jwtToken = beforeToken.getToken();
+        String jwtToken = beforeToken.getCredential();
 
         try {
             if(!tokenUtils.validate(jwtToken)){
-                throw new RuntimeException("token not valid");
+                throw new BadCredentialsException("token not valid");
             }
             OauthInfo oauthInfo = tokenUtils.getOauthInfo(jwtToken);
             String userId = oauthInfo.getUserId();
@@ -41,7 +45,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
             return new JwtAuthenticationToken(user, user.getAuthorities());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
 

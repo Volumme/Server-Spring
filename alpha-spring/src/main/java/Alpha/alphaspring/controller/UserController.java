@@ -51,12 +51,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/token")
-    public boolean checkToken(@RequestBody String data){
+    @GetMapping("/token")
+    public boolean checkToken(@RequestParam("token") String token){
         System.out.println("Token : ");
-        System.out.println(data);
+        System.out.println(token);
         try {
-            return userService.checkKakaoToken(data);
+            return userService.checkKakaoToken(token);
 
         } catch (ParseException | JwkException e) {
             System.out.println("error! = " + e);

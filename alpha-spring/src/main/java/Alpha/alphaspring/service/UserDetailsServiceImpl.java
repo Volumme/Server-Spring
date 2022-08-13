@@ -5,6 +5,7 @@ import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +17,11 @@ public class UserDetailsServiceImpl {
     @Autowired
     private final UserRepository userRepository;
 
-    public UserDetails findUser(String userId, String provider) throws Exception {
-        User user = userRepository.findByUserIdAndProvider(userId, provider).orElseThrow(() -> new Exception("ohlcv result set null"));
+    public UserDetails findUser(String userId, String provider) throws UsernameNotFoundException {
+        User user = userRepository
+                .findByUserIdAndProvider(userId, provider)
+                .orElseThrow(() -> new UsernameNotFoundException("cannot find such user"));
+
         return UserDetails.builder()
                 .age(user.getAge())
                 .gender(user.getGender())

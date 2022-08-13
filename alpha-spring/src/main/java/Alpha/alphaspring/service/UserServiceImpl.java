@@ -38,6 +38,8 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private CommonTokenUtils tokenUtils;
+    @Autowired
     private KakaoTokenUtils kakaoTokenUtils;
 
     //
@@ -72,7 +74,6 @@ public class UserServiceImpl implements UserService{
         String[] bearerHeader = authorizationHeader.split(" ");
         String jwtToken = bearerHeader[1];
 
-        CommonTokenUtils tokenUtils = new CommonTokenUtils();
         String subject = tokenUtils.getSubject(jwtToken);
         String provider = tokenUtils.getIssuer(jwtToken);
 

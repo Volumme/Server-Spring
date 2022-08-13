@@ -17,39 +17,32 @@ import org.springframework.stereotype.Component;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class KakaoTokenUtils implements TokenUtils{
+public class KakaoTokenUtils extends AbstractTokenUtils {
 
     @Autowired
     Environment env;
 
     private final JwkProvider kakaoProvider;
-
+    private final String kakaoNativeAppKey;
 
     public KakaoTokenUtils() {
         this.kakaoProvider = new JwkProviderBuilder("https://kauth.kakao.com")
                 .cached(10, 7, TimeUnit.DAYS) // 7일간 최대 10개 캐시
                 .build();
+        this.kakaoNativeAppKey = env.getProperty("spring.kakao.nativeappkey") != null ?
+                env.getProperty("spring.kakao.nativeappkey") :
+                "";
     }
 
 
     @Override
     public boolean validate(String token) throws ParseException, JwkException {
-        // json token parsing
+        String payload = getJsonPayload(token);
         JSONParser parser = new JSONParser();
-//        JSONObject tokenObj = (JSONObject) parser.parse(token);
-
-        // extract idtoken
-//        String idToken = (String) tokenObj.get("IdToken");
-
-        //seperate token
-        String[] jwt = token.split("\\.");
-
-        //decode payload -> json
-        byte[] decodedBytes = Base64.getDecoder().decode(jwt[1]);
-        String payload = new String(decodedBytes);
 
         //extract iss
         JSONObject payloadObj = (JSONObject) parser.parse(payload);
@@ -65,7 +58,7 @@ public class KakaoTokenUtils implements TokenUtils{
         String aud = (String) payloadObj.get("aud");
 
         //check aud
-        if (!env.getProperty("spring.kakao.nativeappkey").equals(aud)) {
+        if (kakaoNativeAppKey.equals(aud)) {
             System.out.println("env.getProperty(\"spring.kakao.nativeappkey\") = " + env.getProperty("spring.kakao.nativeappkey"));
             System.out.println("aud = " + aud);
             return false;
@@ -101,13 +94,12 @@ public class KakaoTokenUtils implements TokenUtils{
 
     @Override
     public OauthInfo getOauthInfo(String token) throws ParseException {
+        String payload = getJsonPayload(token);
         JSONParser parser = new JSONParser();
-        DecodedJWT jwtOrigin = JWT.decode(token);
-        String payloadStr = jwtOrigin.getPayload();
-        byte[] decodedBytes = Base64.getDecoder().decode(payloadStr);
-        String payload = new String(decodedBytes);
+
         JSONObject payloadObj = (JSONObject) parser.parse(payload);
         String id = (String) payloadObj.get("sub");
+
         return OauthInfo.builder().userId(id).provider("kakao").build();
     }
 }

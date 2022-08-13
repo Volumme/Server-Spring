@@ -3,7 +3,9 @@ package Alpha.alphaspring.filter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
@@ -37,14 +39,16 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String authHeader = request.getHeader(AUTH_HEADER_NAME);
-        if (authHeader == null || authHeader.isEmpty()) throw new RuntimeException("Auth header does not exists");
+        if (authHeader == null || authHeader.isEmpty()) {
+            throw new AuthenticationCredentialsNotFoundException("Auth header does not exists");
+        }
 
         String[] authHeaderValue = authHeader.split(" ");
         if (authHeaderValue.length != 2){
-            throw new RuntimeException("invalid auth header, require token");
+            throw new AuthenticationCredentialsNotFoundException("invalid auth header, require token");
         }
         if(!BEARER_NAME.equals(authHeaderValue[0])) {
-            throw new RuntimeException("invalid auth header, require bearer");
+            throw new BadCredentialsException("invalid auth header, require bearer");
         }
         String jwtToken = authHeaderValue[1];
 

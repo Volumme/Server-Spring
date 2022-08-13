@@ -83,7 +83,7 @@ public class KakaoTokenUtils implements TokenUtils{
 
 // 1. 검증없이 디코딩
         DecodedJWT jwtOrigin = JWT.decode(token);
-        System.out.println("jwtOrigin = " + jwtOrigin.getToken());
+//        System.out.println("jwtOrigin = " + jwtOrigin.getToken());
 
 // 2. 공개키 프로바이더 준비
         Jwk jwk = kakaoProvider.get(jwtOrigin.getKeyId());
@@ -93,7 +93,7 @@ public class KakaoTokenUtils implements TokenUtils{
         JWTVerifier verifier = JWT.require(algorithm)
                 .build();
         DecodedJWT decodedJwt = verifier.verify(token);
-        System.out.println("decodedJwt = " + decodedJwt.getToken());
+//        System.out.println("decodedJwt = " + decodedJwt.getToken());
         return true;
     }
 

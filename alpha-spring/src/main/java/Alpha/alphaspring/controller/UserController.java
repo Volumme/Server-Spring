@@ -3,11 +3,18 @@ package Alpha.alphaspring.controller;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.service.UserServiceImpl;
 import com.auth0.jwk.JwkException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +31,11 @@ public class UserController {
     @GetMapping("/")
     public String home(){
         return "SERVER RUNNING!!";
+    }
+
+    @GetMapping("/session")
+    public String session(ObjectMapper mapper) throws JsonProcessingException {
+        return mapper.writeValueAsString(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @GetMapping("/users")

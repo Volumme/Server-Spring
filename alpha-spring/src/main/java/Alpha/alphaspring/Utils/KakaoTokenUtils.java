@@ -28,11 +28,11 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
 
     private final JwkProvider kakaoProvider;
     private final String kakaoNativeAppKey;
-    private final String PROVIDER_KAKAO = "kakao";
+    private final String PROVIDER_KAKAO = "https://kauth.kakao.com";
 
     public KakaoTokenUtils(Environment env) {
         this.env = env;
-        this.kakaoProvider = new JwkProviderBuilder("https://kauth.kakao.com")
+        this.kakaoProvider = new JwkProviderBuilder(PROVIDER_KAKAO)
                 .cached(10, 7, TimeUnit.DAYS) // 7일간 최대 10개 캐시
                 .build();
         this.kakaoNativeAppKey = env.getProperty("spring.kakao.nativeappkey") != null ?
@@ -51,7 +51,7 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
         String iss = getIssuer(token);
 
         //check iss
-        if (!"https://kauth.kakao.com".equals(iss)) {
+        if (!PROVIDER_KAKAO.equals(iss)) {
             System.out.println("iss = " + iss);
             return false;
         }
@@ -60,7 +60,7 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
         String aud = (String) payloadObj.get("aud");
 
         //check aud
-        if (kakaoNativeAppKey.equals(aud)) {
+        if (!kakaoNativeAppKey.equals(aud)) {
             System.out.println("env.getProperty(\"spring.kakao.nativeappkey\") = " + env.getProperty("spring.kakao.nativeappkey"));
             System.out.println("aud = " + aud);
             return false;

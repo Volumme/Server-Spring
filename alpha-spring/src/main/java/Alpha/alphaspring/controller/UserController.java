@@ -1,5 +1,6 @@
 package Alpha.alphaspring.controller;
 
+import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.service.UserServiceImpl;
 import com.auth0.jwk.JwkException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -70,10 +72,20 @@ public class UserController {
 //            @RequestParam(required = false, value = "gender") String userGender,
 //            @RequestParam(required = false, value = "phone_number") String userPhoneNumber,
 //            @RequestParam(required = false, value = "age") int userAge
+            @RequestHeader Map<String, Object> requestHeader,
             @RequestBody User user
-            ){
+            ) throws ParseException {
 //        userService.join(new User(userId, userPw, userName, userGender, userPhoneNumber, userAge));
-        System.out.println(user);
+        String authorizationHeader = (String) requestHeader.get("authorization");
+        String[] bearerHeader = authorizationHeader.split(" ");
+        String jwtToken = bearerHeader[1];
+        CommonTokenUtils tokenUtils = new CommonTokenUtils();
+
+        String subject = tokenUtils.getSubject(jwtToken);
+        String provider = tokenUtils.getIssuer(jwtToken);
+
+        user.setUserId(subject);
+        user.setProvider(provider);
 
         userService.join(user);
         return user;

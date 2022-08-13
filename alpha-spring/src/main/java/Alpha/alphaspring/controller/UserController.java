@@ -76,18 +76,8 @@ public class UserController {
             @RequestBody User user
             ) throws ParseException {
 //        userService.join(new User(userId, userPw, userName, userGender, userPhoneNumber, userAge));
-        String authorizationHeader = (String) requestHeader.get("authorization");
-        String[] bearerHeader = authorizationHeader.split(" ");
-        String jwtToken = bearerHeader[1];
-        CommonTokenUtils tokenUtils = new CommonTokenUtils();
 
-        String subject = tokenUtils.getSubject(jwtToken);
-        String provider = tokenUtils.getIssuer(jwtToken);
-
-        user.setUserId(subject);
-        user.setProvider(provider);
-
-        userService.join(user);
+        userService.join(requestHeader, user);
         return user;
     }
 

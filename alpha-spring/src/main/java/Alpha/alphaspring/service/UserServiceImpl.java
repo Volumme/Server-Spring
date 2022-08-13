@@ -1,5 +1,6 @@
 package Alpha.alphaspring.service;
 
+import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.repository.UserRepository;
 
@@ -20,11 +21,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.http.HttpHeaders;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Transactional
@@ -134,8 +133,18 @@ public class UserServiceImpl implements UserService{
         return true;
     }
 
-    @Override
-    public void join(User user) {
+    public void join(Map<String, Object> headers, User user) throws ParseException {
+        String authorizationHeader = (String) headers.get("authorization");
+        String[] bearerHeader = authorizationHeader.split(" ");
+        String jwtToken = bearerHeader[1];
+
+        CommonTokenUtils tokenUtils = new CommonTokenUtils();
+        String subject = tokenUtils.getSubject(jwtToken);
+        String provider = tokenUtils.getIssuer(jwtToken);
+
+        user.setUserId(subject);
+        user.setProvider(provider);
+
         userRepository.save(user);
     }
 

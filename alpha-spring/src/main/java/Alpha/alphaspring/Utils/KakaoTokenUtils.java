@@ -28,6 +28,7 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
 
     private final JwkProvider kakaoProvider;
     private final String kakaoNativeAppKey;
+    private final String PROVIDER_KAKAO = "kakao";
 
     public KakaoTokenUtils(Environment env) {
         this.env = env;
@@ -47,7 +48,7 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
 
         //extract iss
         JSONObject payloadObj = (JSONObject) parser.parse(payload);
-        String iss = (String) payloadObj.get("iss");
+        String iss = getIssuer(token);
 
         //check iss
         if (!"https://kauth.kakao.com".equals(iss)) {
@@ -95,12 +96,9 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
 
     @Override
     public OauthInfo getOauthInfo(String token) throws ParseException {
-        String payload = getJsonPayload(token);
-        JSONParser parser = new JSONParser();
-
-        JSONObject payloadObj = (JSONObject) parser.parse(payload);
-        String id = (String) payloadObj.get("sub");
-
-        return OauthInfo.builder().userId(id).provider("kakao").build();
+        return OauthInfo.builder()
+                .userId(getSubject(token))
+                .provider(PROVIDER_KAKAO)
+                .build();
     }
 }

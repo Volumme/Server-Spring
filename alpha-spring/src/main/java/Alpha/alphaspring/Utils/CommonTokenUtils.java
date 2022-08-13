@@ -2,7 +2,9 @@ package Alpha.alphaspring.Utils;
 
 import com.auth0.jwk.JwkException;
 import org.json.simple.parser.ParseException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommonTokenUtils extends AbstractTokenUtils{
     @Override
     public boolean validate(String token) throws ParseException, JwkException {

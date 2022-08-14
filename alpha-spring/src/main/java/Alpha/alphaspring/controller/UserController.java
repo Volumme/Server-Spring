@@ -72,7 +72,7 @@ public class UserController {
             @RequestBody UserRegisterRequestDto requestBody
             ) throws ParseException {
         userService.join(requestHeader, requestBody);
-        return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
     @GetMapping("/user")

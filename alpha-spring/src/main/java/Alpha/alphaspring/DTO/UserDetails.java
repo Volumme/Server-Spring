@@ -1,9 +1,11 @@
 package Alpha.alphaspring.DTO;
 
 
+import Alpha.alphaspring.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -35,4 +37,12 @@ public class UserDetails {
 
         private boolean isExpired;
 
+        public static UserDetails of(User user) {
+                ModelMapper modelMapper = new ModelMapper();
+                UserDetails userDetails = modelMapper.map(user, UserDetails.class);
+                userDetails.setLocked(false);
+                userDetails.setExpired(false);
+                userDetails.setEnabled(true);
+                return userDetails;
+        }
 }

@@ -20,30 +20,50 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    private String userId;
-
-    @Column(name = "provider")
+    @Column(name = "provider", nullable = false)
     private String provider;
 
-    @Column(name = "pw")
-    private String pw;
-
-    @Column(name = "name")
-    private String name;
+    @Column(name = "nickname")
+    private String nickname;
 
     @Column(name = "gender")
     private String gender;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Column(name = "height")
+    private Float height;
 
-    @Column(name = "age")
-    private Long age;
+    @Column(name = "weight")
+    private Float weight;
+
+    @Column(name = "body_fat_per")
+    private Float bodyFatPer;
+
+    @Column(name = "muscle_per")
+    private Float musclePer;
 
 //    @OneToMany(mappedBy = "user")
 //    List<Routine> routines = new ArrayList<>();
 }
+/*
+id -> auto
 
+provider
+username
+--------->bytoken
+
+nickname
+isnewbie
+gender
+height
+weight
+bodyfatper
+muscleper
+
+
+
+
+ */
 

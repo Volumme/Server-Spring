@@ -1,9 +1,11 @@
 package Alpha.alphaspring.DTO;
 
 import Alpha.alphaspring.domain.User;
+import lombok.Setter;
 
 import java.util.Map;
 
+@Setter
 public class UserRegisterRequestDto implements IRequestDto<User>{
     private String nickName;
 

@@ -4,7 +4,7 @@ import Alpha.alphaspring.domain.User;
 
 import java.util.Map;
 
-public class UserRegisterRequestDto implements IRequestDto{
+public class UserRegisterRequestDto implements IRequestDto<User>{
     private String nickName;
 
     private boolean isNewbie;
@@ -20,7 +20,7 @@ public class UserRegisterRequestDto implements IRequestDto{
     private Float musclePer;
 
     @Override
-    public Object toEntity(Map<String, Object> args) {
+    public User toEntity(Map<String, Object> args) {
         return User.builder()
                 .provider((String) args.get("provider"))
                 .username((String) args.get("username"))

@@ -1,5 +1,6 @@
 package Alpha.alphaspring.controller;
 
+import Alpha.alphaspring.DTO.UserRegisterRequestDto;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.service.UserServiceImpl;
@@ -12,6 +13,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,8 +46,7 @@ public class UserController {
     @GetMapping("/users")
     public List<User> userList(User user){
         try {
-            List<User> users = userService.findUsers();
-            return users;
+            return userService.findUsers();
         }
         catch (Exception e){
             return null;
@@ -65,20 +67,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User registerUser(
-//            @RequestParam(value = "id") String userId,
-//            @RequestParam(required = false, value = "pw") String userPw,
-//            @RequestParam(required = false, value = "name") String userName,
-//            @RequestParam(required = false, value = "gender") String userGender,
-//            @RequestParam(required = false, value = "phone_number") String userPhoneNumber,
-//            @RequestParam(required = false, value = "age") int userAge
+    public ResponseEntity<String> registerUser(
             @RequestHeader Map<String, Object> requestHeader,
-            @RequestBody User user
+            @RequestBody UserRegisterRequestDto requestBody
             ) throws ParseException {
-//        userService.join(new User(userId, userPw, userName, userGender, userPhoneNumber, userAge));
-
-        userService.join(requestHeader, user);
-        return user;
+        userService.join(requestHeader, requestBody);
+        return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/user")

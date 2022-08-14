@@ -88,7 +88,7 @@ public class UserServiceImpl {
     }
 
 
-    public User findUser(String userId) throws Exception {
-        return userRepository.findByUserId(userId).orElseThrow(() -> new Exception("ohlcv result set null"));
+    public User findUser(String username) throws Exception {
+        return userRepository.findByUsername(username).orElseThrow(() -> new Exception("ohlcv result set null"));
     }
 }

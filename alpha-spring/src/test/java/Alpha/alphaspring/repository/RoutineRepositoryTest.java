@@ -21,9 +21,9 @@ class RoutineRepositoryTest {
 
     @Test
     void save() {
-        User user = User.builder().userId("jykim").age(24L).gender("male").name("jykim").phoneNumber("00").pw("asdasd").build();
-        Routine routine = Routine.builder().name("3times a week").user(user).build();
-        routineRepository.save(routine);
+//        User user = User.builder().userId("jykim").age(24L).gender("male").name("jykim").phoneNumber("00").pw("asdasd").build();
+//        Routine routine = Routine.builder().name("3times a week").user(user).build();
+//        routineRepository.save(routine);
 //        org.assertj.core.api.Assertions.assertThat(testRoutine).isNotNull();
 
     }

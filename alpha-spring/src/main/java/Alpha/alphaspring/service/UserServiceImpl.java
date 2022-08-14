@@ -1,5 +1,6 @@
 package Alpha.alphaspring.service;
 
+import Alpha.alphaspring.DTO.UserRegisterRequestDto;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.Utils.KakaoTokenUtils;
 import Alpha.alphaspring.domain.User;
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Transactional
 @Service
 @PropertySource("classpath:application.properties")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl {
 
     // use env to get kakao native key from application.properties
     @Autowired
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService{
         return kakaoTokenUtils.validate(token);
     }
 
-    public void join(Map<String, Object> headers, User user) throws ParseException {
+    public void join(Map<String, Object> headers, UserRegisterRequestDto) throws ParseException {
         String authorizationHeader = (String) headers.get("authorization");
         String[] bearerHeader = authorizationHeader.split(" ");
         String jwtToken = bearerHeader[1];
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
 
-    @Override
+
     public User findUser(String userId) throws Exception {
         return userRepository.findByUserId(userId).orElseThrow(() -> new Exception("ohlcv result set null"));
     }

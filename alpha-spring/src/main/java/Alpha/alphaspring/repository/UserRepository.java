@@ -1,17 +1,19 @@
 package Alpha.alphaspring.repository;
 
 
+import Alpha.alphaspring.domain.Routine;
 import Alpha.alphaspring.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
-    User save(User member);
-    Optional<User> findById(String id);
-    Optional<User> findByName(String name);
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    User save(User user);
     List<User> findAll();
-    Optional<User> findByUserId(String userId);
+    Optional<User> findByUsername(String userName);
 
-    Optional<User> findByUserIdAndProvider(String userId, String provider);
+    Optional<User> findByUsernameAndProvider(String username, String provider);
 }

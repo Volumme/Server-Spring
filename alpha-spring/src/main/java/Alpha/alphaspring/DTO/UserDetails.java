@@ -13,7 +13,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Builder
-public class UserDetails {
+public class UserDetails implements IResponseDto<User, UserDetails> {
 
         private Long id;
 
@@ -44,5 +44,10 @@ public class UserDetails {
                 userDetails.setExpired(false);
                 userDetails.setEnabled(true);
                 return userDetails;
+        }
+
+        @Override
+        public UserDetails fromEntity(User source) {
+                return of(source);
         }
 }

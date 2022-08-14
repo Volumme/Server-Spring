@@ -70,7 +70,7 @@ public class UserServiceImpl {
         return kakaoTokenUtils.validate(token);
     }
 
-    public void join(Map<String, Object> headers, UserRegisterRequestDto) throws ParseException {
+    public void join(Map<String, Object> headers, UserRegisterRequestDto request) throws ParseException {
         String authorizationHeader = (String) headers.get("authorization");
         String[] bearerHeader = authorizationHeader.split(" ");
         String jwtToken = bearerHeader[1];
@@ -78,8 +78,11 @@ public class UserServiceImpl {
         String subject = tokenUtils.getSubject(jwtToken);
         String provider = tokenUtils.getIssuer(jwtToken);
 
-        user.setUserId(subject);
-        user.setProvider(provider);
+        Map<String, Object> args = new HashMap<>();
+        args.put("provider", provider);
+        args.put("username", subject);
+
+        User user = request.toEntity(args);
 
         userRepository.save(user);
     }

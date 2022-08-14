@@ -44,6 +44,9 @@ public class User {
     @Column(name = "muscle_per")
     private Float musclePer;
 
+    @Column(name = "is_newbie")
+    private boolean isNewbie;
+
 //    @OneToMany(mappedBy = "user")
 //    List<Routine> routines = new ArrayList<>();
 }

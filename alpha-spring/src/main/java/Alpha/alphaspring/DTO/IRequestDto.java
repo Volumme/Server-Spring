@@ -1,7 +1,5 @@
 package Alpha.alphaspring.DTO;
 
-import java.util.Map;
-
-public interface IRequestDto<T> {
-    T toEntity(Map<String, Object> args);
+public interface IRequestDto<R, T> {
+    R toEntity(T args);
 }

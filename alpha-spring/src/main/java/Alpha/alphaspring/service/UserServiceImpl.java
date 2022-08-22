@@ -1,19 +1,13 @@
 package Alpha.alphaspring.service;
 
 import Alpha.alphaspring.DTO.UserRegisterRequestDto;
+import Alpha.alphaspring.DTO.UserResponseDto;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.Utils.KakaoTokenUtils;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.repository.UserRepository;
 
-import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkException;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -23,10 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.http.HttpHeaders;
-import java.security.interfaces.RSAPublicKey;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Transactional
 @Service
@@ -38,6 +29,7 @@ public class UserServiceImpl {
     private Environment env;
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private CommonTokenUtils tokenUtils;
     @Autowired
@@ -87,8 +79,8 @@ public class UserServiceImpl {
         userRepository.save(user);
     }
 
-
-    public User findUser(String username) throws Exception {
-        return userRepository.findByUsername(username).orElseThrow(() -> new Exception("ohlcv result set null"));
+    public UserResponseDto findUser(String nickname) throws Exception {
+        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new Exception("error find by nickname"));
+        return new UserResponseDto().fromEntity(user);
     }
 }

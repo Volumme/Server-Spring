@@ -1,13 +1,14 @@
 package Alpha.alphaspring.DTO;
 
 import Alpha.alphaspring.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 import java.util.Map;
 
 @Setter
-public class UserRegisterRequestDto implements IRequestDto<User>{
-    private String nickName;
+public class UserRegisterRequestDto implements IRequestDto<User, Map<String, Object>>{
+    private String nickname;
 
     private boolean isNewbie;
 
@@ -31,7 +32,7 @@ public class UserRegisterRequestDto implements IRequestDto<User>{
                 .weight(weight)
                 .bodyFatPer(bodyFatPer)
                 .musclePer(musclePer)
-                .nickname(nickName)
+                .nickname(nickname)
                 .isNewbie(isNewbie)
                 .build();
     }

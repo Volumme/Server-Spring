@@ -1,15 +1,12 @@
 package Alpha.alphaspring.controller;
 
 import Alpha.alphaspring.DTO.UserRegisterRequestDto;
-import Alpha.alphaspring.Utils.CommonTokenUtils;
+import Alpha.alphaspring.DTO.UserResponseDto;
 import Alpha.alphaspring.domain.User;
 import Alpha.alphaspring.service.UserServiceImpl;
 import com.auth0.jwk.JwkException;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,10 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -71,18 +66,21 @@ public class UserController {
             @RequestHeader Map<String, Object> requestHeader,
             @RequestBody UserRegisterRequestDto requestBody
             ) throws ParseException {
+        System.out.println("requestBody = " + requestBody);
         userService.join(requestHeader, requestBody);
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return new ResponseEntity<>("success!", HttpStatus.OK);
     }
 
     @GetMapping("/user")
-    public User findUserById(@RequestParam(value = "userId") String userId){
+    public UserResponseDto findUser(@RequestParam(value = "nickname") String nickname){
         try {
-            return userService.findUser(userId);
+            return userService.findUser(nickname);
         }
         catch (Exception e){
             System.out.println("e = " + e);
             return null;
         }
     }
+
+
 }

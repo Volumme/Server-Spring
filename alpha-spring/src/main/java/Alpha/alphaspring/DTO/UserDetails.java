@@ -13,19 +13,9 @@ import java.util.Collection;
 @Builder
 public class UserDetails {
 
-        private Long id;
+        private String provider;
 
-        private String userId;
-
-        private String pw;
-
-        private String name;
-
-        private String gender;
-
-        private String phoneNumber;
-
-        private Long age;
+        private String username;
 
         private Collection<? extends GrantedAuthority> authorities;
 

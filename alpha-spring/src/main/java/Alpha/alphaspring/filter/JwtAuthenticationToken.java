@@ -14,9 +14,17 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private final String credential;
 
+
     public JwtAuthenticationToken(String token) {
         super(null);
-        this.principal = token; // TODO: JWTParser로 사용자 ID 같은 것만 빼내든 뭐든 하는게 어떨지..?
+        this.principal = null;
+        this.credential = token;
+        this.setAuthenticated(false);
+    }
+
+    public JwtAuthenticationToken(String provider, String token) {
+        super(null);
+        this.principal = provider;
         this.credential = token;
         this.setAuthenticated(false);
     }
@@ -39,3 +47,4 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     }
 
 }
+

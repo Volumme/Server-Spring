@@ -3,34 +3,39 @@ package Alpha.alphaspring.controller;
 import Alpha.alphaspring.DTO.UserRegisterRequestDto;
 import Alpha.alphaspring.DTO.UserResponseDto;
 import Alpha.alphaspring.domain.User;
-import Alpha.alphaspring.service.UserServiceImpl;
+import Alpha.alphaspring.service.UserService;
 import com.auth0.jwk.JwkException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping("/")
-    public String home(){
-        return "SERVER RUNNING!!";
+    public ResponseEntity<String> home(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<>("SERVER RUNNING!!", headers, HttpStatus.OK);
     }
 
     @GetMapping("/session")
@@ -68,7 +73,11 @@ public class UserController {
             ) throws ParseException {
         System.out.println("requestBody = " + requestBody);
         userService.join(requestHeader, requestBody);
-        return new ResponseEntity<>("success!", HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        return new ResponseEntity<>("success!", headers, HttpStatus.OK);
     }
 
     @GetMapping("/user")

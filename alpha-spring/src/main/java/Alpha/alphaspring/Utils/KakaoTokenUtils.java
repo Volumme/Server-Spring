@@ -13,11 +13,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.interfaces.RSAPublicKey;
-import java.util.Base64;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -101,4 +101,15 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
                 .provider(PROVIDER_KAKAO)
                 .build();
     }
+
+    @Override
+    public boolean supports(String token){
+        try{
+            String issuer = getIssuer(token);
+            return PROVIDER_KAKAO.equals(issuer);
+        }catch (ParseException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
 }

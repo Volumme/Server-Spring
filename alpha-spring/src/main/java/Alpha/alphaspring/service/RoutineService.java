@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 @Transactional
 @Service
-public class RoutineServiceimpl {
+public class RoutineService {
 
     @Autowired
     private UserRepository userRepository;

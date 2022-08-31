@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Service
-public class UserDetailsServiceImpl {
+public class UserDetailsService {
 
     @Autowired
     private final UserRepository userRepository;
@@ -25,4 +23,6 @@ public class UserDetailsServiceImpl {
         return UserDetails.builder()
                 .build();
     }
+
+
 }

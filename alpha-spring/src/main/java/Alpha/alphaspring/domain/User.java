@@ -47,6 +47,9 @@ public class User {
     @Column(name = "is_newbie")
     private boolean isNewbie;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
 //    @OneToMany(mappedBy = "user")
 //    List<Routine> routines = new ArrayList<>();
 }

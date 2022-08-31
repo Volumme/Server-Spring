@@ -1,10 +1,11 @@
 package Alpha.alphaspring.config;
 
-import Alpha.alphaspring.filter.JwtAuthenticationFilter;
-import Alpha.alphaspring.filter.JwtAuthenticationProvider;
+import Alpha.alphaspring.filter.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,15 +21,52 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebMvc
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Autowired
     private JwtAuthenticationProvider jwtProvider;
+    @Autowired
+    private NaverAuthenticationProvider naverProvider;
+    @Autowired
+    private KakaoAuthenticationProvider kakaoProvider;
+    @Autowired
+    private  GoogleAuthenticationProvider googleProvider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(jwtProvider);
+        auth
+            .authenticationProvider(jwtProvider)
+            .authenticationProvider(naverProvider)
+            .authenticationProvider(googleProvider)
+            .authenticationProvider(kakaoProvider);
+    }
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+    @Bean
+    public SnsAuthenticationFilter snsFilter() throws Exception {
+        return new SnsAuthenticationFilter(authenticationManagerBean());
+    }
+    @Bean
+    public JwtAuthenticationFilter jwtFilter() throws Exception {
+        return new JwtAuthenticationFilter(authenticationManagerBean());
+    }
+
+    @Bean
+    @Primary
+    public FilterRegistrationBean<SnsAuthenticationFilter> snsRegistrationFilter(SnsAuthenticationFilter filter) throws Exception {
+        FilterRegistrationBean<SnsAuthenticationFilter> registrationBean = new FilterRegistrationBean<>(filter);
+        registrationBean.setEnabled(false);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtRegistrationFilter(JwtAuthenticationFilter filter) throws Exception {
+        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>(filter);
+        registrationBean.setEnabled(false);
+        return registrationBean;
     }
 
     @Override
@@ -38,17 +76,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // JSESSION 비활성화
         // 회원 가입을 제외한 모든 요청에 대해 인증 진행
         // UsernamePasswordAuthenticationFilter 앞 단에 Jwt Handler Filter
-
         http
             .cors().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/register").permitAll()
             .anyRequest().authenticated()
             .and()
-            .addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(snsFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+            ;
     }
 
     @Override

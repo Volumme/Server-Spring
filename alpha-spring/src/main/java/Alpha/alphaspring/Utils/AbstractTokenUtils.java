@@ -63,4 +63,6 @@ public abstract class AbstractTokenUtils implements TokenUtils {
     public String getIssuer(String token) throws ParseException {
         return getClaim(token, "iss", SCOPE_PAYLOAD);
     }
+
+
 }

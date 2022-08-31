@@ -22,7 +22,7 @@ import java.util.*;
 @Transactional
 @Service
 @PropertySource("classpath:application.properties")
-public class UserServiceImpl {
+public class UserService {
 
     // use env to get kakao native key from application.properties
     @Autowired
@@ -82,5 +82,16 @@ public class UserServiceImpl {
     public UserResponseDto findUser(String nickname) throws Exception {
         User user = userRepository.findByNickname(nickname).orElseThrow(() -> new Exception("error find by nickname"));
         return new UserResponseDto().fromEntity(user);
+    }
+
+    public void saveToken(String username, String provider, String refreshToken) throws  Exception{
+        User user = userRepository.findByUsernameAndProvider(username, provider).isPresent() ?
+                userRepository.findByUsernameAndProvider(username, provider).orElseThrow(() -> new Exception("error find by nickname")) :
+                User.builder()
+                        .username(username)
+                        .provider(provider)
+                        .build();
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
     }
 }

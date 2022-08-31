@@ -1,7 +1,5 @@
 package Alpha.alphaspring.service;
 
-import Alpha.alphaspring.DTO.RoutineRegisterRequestDto;
-import Alpha.alphaspring.DTO.RoutineResponseDto;
 import Alpha.alphaspring.DTO.SubRoutineRegisterRequestDto;
 import Alpha.alphaspring.DTO.SubRoutineResponseDto;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
@@ -26,7 +24,7 @@ import java.util.stream.Stream;
 
 @Transactional
 @Service
-public class SubRoutineServiceImpl {
+public class SubRoutineService {
 
     @Autowired
     private UserRepository userRepository;

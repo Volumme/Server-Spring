@@ -4,25 +4,28 @@ import Alpha.alphaspring.DTO.RoutineRegisterRequestDto;
 import Alpha.alphaspring.DTO.RoutineResponseDto;
 import Alpha.alphaspring.DTO.SubRoutineRegisterRequestDto;
 import Alpha.alphaspring.DTO.SubRoutineResponseDto;
-import Alpha.alphaspring.service.RoutineServiceimpl;
-import Alpha.alphaspring.service.SubRoutineServiceImpl;
+import Alpha.alphaspring.service.RoutineService;
+import Alpha.alphaspring.service.SubRoutineService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 public class RoutineController {
-    private final RoutineServiceimpl routineService;
+    private final RoutineService routineService;
 
-    private final SubRoutineServiceImpl subRoutineService;
+    private final SubRoutineService subRoutineService;
 
     @Autowired
-    public RoutineController(RoutineServiceimpl routineService, SubRoutineServiceImpl subRoutineService) {
+    public RoutineController(RoutineService routineService, SubRoutineService subRoutineService) {
         this.routineService = routineService;
         this.subRoutineService = subRoutineService;
     }
@@ -35,7 +38,10 @@ public class RoutineController {
         System.out.println("requestBody = " + requestBody);
         routineService.join(requestHeader, requestBody);
 
-        return new ResponseEntity<>("success!", HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        return new ResponseEntity<>("success!", headers, HttpStatus.OK);
     }
 
     @GetMapping("/routines")
@@ -56,7 +62,10 @@ public class RoutineController {
         System.out.println("requestBody = " + requestBody);
         subRoutineService.join(requestHeader, requestBody);
 
-        return new ResponseEntity<>("success!", HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        return new ResponseEntity<>("success!", headers, HttpStatus.OK);
     }
 
     @GetMapping("/subRoutines")
@@ -64,7 +73,7 @@ public class RoutineController {
         try{
             return subRoutineService.findSubRoutines();
         }catch (Exception e){
-            System.out.println("/routines:e = " + e);
+            System.out.println("/subRoutines:e = " + e);
             return null;
         }
     }

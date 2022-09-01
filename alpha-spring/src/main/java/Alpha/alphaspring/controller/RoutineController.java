@@ -1,9 +1,6 @@
 package Alpha.alphaspring.controller;
 
-import Alpha.alphaspring.DTO.RoutineRegisterRequestDto;
-import Alpha.alphaspring.DTO.RoutineResponseDto;
-import Alpha.alphaspring.DTO.SubRoutineRegisterRequestDto;
-import Alpha.alphaspring.DTO.SubRoutineResponseDto;
+import Alpha.alphaspring.DTO.*;
 import Alpha.alphaspring.service.RoutineService;
 import Alpha.alphaspring.service.SubRoutineService;
 import org.json.simple.parser.ParseException;
@@ -31,17 +28,12 @@ public class RoutineController {
     }
 
     @PostMapping("/routine")
-    public ResponseEntity<String> postRoutine(
-            @RequestHeader Map<String, Object> requestHeader,
+    public StringResponseDto postRoutine(
             @RequestBody RoutineRegisterRequestDto requestBody
     ) throws ParseException {
         System.out.println("requestBody = " + requestBody);
-        routineService.join(requestHeader, requestBody);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-
-        return new ResponseEntity<>("success!", headers, HttpStatus.OK);
+        routineService.join(requestBody);
+        return new StringResponseDto("Routine Registered!!");
     }
 
     @GetMapping("/routines")
@@ -55,17 +47,12 @@ public class RoutineController {
     }
 
     @PostMapping("/subRoutine")
-    public ResponseEntity<String> postSubRoutine(
-            @RequestHeader Map<String, Object> requestHeader,
+    public StringResponseDto postSubRoutine(
             @RequestBody SubRoutineRegisterRequestDto requestBody
     ) throws ParseException {
         System.out.println("requestBody = " + requestBody);
-        subRoutineService.join(requestHeader, requestBody);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-
-        return new ResponseEntity<>("success!", headers, HttpStatus.OK);
+        subRoutineService.join(requestBody);
+        return new StringResponseDto("SubRoutine Registered!!");
     }
 
     @GetMapping("/subRoutines")

@@ -26,7 +26,7 @@ public class User {
     @Column(name = "provider", nullable = false)
     private String provider;
 
-    @Column(name = "nickname")
+    @Column(name = "nickname", unique = true)
     private String nickname;
 
     @Column(name = "gender")

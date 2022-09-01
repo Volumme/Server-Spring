@@ -1,5 +1,6 @@
 package Alpha.alphaspring.controller;
 
+import Alpha.alphaspring.DTO.StringResponseDto;
 import Alpha.alphaspring.DTO.UserRegisterRequestDto;
 import Alpha.alphaspring.DTO.UserResponseDto;
 import Alpha.alphaspring.domain.User;
@@ -32,10 +33,8 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<String> home(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-        return new ResponseEntity<>("SERVER RUNNING!!", headers, HttpStatus.OK);
+    public StringResponseDto home(){
+        return new StringResponseDto("Server Running!!");
     }
 
     @GetMapping("/session")
@@ -67,17 +66,11 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(
-            @RequestHeader Map<String, Object> requestHeader,
+    public StringResponseDto registerUser(
             @RequestBody UserRegisterRequestDto requestBody
             ) throws ParseException {
-        System.out.println("requestBody = " + requestBody);
-        userService.join(requestHeader, requestBody);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-
-        return new ResponseEntity<>("success!", headers, HttpStatus.OK);
+        userService.join(requestBody);
+        return new StringResponseDto("User Registered!!");
     }
 
     @GetMapping("/user")

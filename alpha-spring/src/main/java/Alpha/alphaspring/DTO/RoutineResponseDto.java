@@ -14,9 +14,12 @@ public class RoutineResponseDto implements IResponseDto<RoutineResponseDto, Rout
 
     private String routineName;
 
+    private Long routineId;
+
     @Override
     public RoutineResponseDto fromEntity(Routine routine) {
         return RoutineResponseDto.builder()
+                .routineId(routine.getId())
                 .username(routine.getUser().getNickname())
                 .routineName(routine.getName())
                 .build()

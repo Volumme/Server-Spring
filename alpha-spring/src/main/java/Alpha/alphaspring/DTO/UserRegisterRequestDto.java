@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.Map;
 
 @Setter
-public class UserRegisterRequestDto implements IRequestDto<User, Map<String, Object>>{
+public class UserRegisterRequestDto implements IRequestDto<User, Object>{
     private String nickname;
 
     private boolean isNewbie;
@@ -23,10 +23,8 @@ public class UserRegisterRequestDto implements IRequestDto<User, Map<String, Obj
     private Float musclePer;
 
     @Override
-    public User toEntity(Map<String, Object> args) {
+    public User toEntity(Object object) {
         return User.builder()
-                .provider((String) args.get("provider"))
-                .username((String) args.get("username"))
                 .gender(gender)
                 .height(height)
                 .weight(weight)

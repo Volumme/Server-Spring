@@ -14,5 +14,6 @@ public interface SubRoutineRepository extends JpaRepository<SubRoutine, Long> {
     Optional<SubRoutine> findById(String id);
     Optional<SubRoutine> findByName(String name);
     List<SubRoutine> findAll();
+    List<SubRoutine> findByRoutine(Routine routine);
     Optional<SubRoutine> findByRoutineId(Long userId);
 }

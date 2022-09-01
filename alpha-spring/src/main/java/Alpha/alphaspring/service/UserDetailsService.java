@@ -21,6 +21,11 @@ public class UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("cannot find such user"));
 
         return UserDetails.builder()
+                .username(userId)
+                .provider(provider)
+                .isEnabled(true)
+                .isExpired(false)
+                .isLocked(false)
                 .build();
     }
 

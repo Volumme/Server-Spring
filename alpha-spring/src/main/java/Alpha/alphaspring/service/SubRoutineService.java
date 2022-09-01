@@ -2,6 +2,7 @@ package Alpha.alphaspring.service;
 
 import Alpha.alphaspring.DTO.SubRoutineRegisterRequestDto;
 import Alpha.alphaspring.DTO.SubRoutineResponseDto;
+import Alpha.alphaspring.DTO.UserDetails;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.Utils.KakaoTokenUtils;
 import Alpha.alphaspring.domain.Routine;
@@ -12,6 +13,7 @@ import Alpha.alphaspring.repository.SubRoutineRepository;
 import Alpha.alphaspring.repository.UserRepository;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +40,19 @@ public class SubRoutineService {
     private KakaoTokenUtils kakaoTokenUtils;
 
     public List<SubRoutineResponseDto> findSubRoutines() throws Exception {
-        List<SubRoutine> subRoutines = subRoutineRepository.findAll();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        String provider = userDetails.getProvider();
+        User user = userRepository.findByUsernameAndProvider(username, provider).orElseThrow(() -> new Exception("No user found"));
+        List<Routine> routines = routineRepository.findByUser(user);
+
+        List<SubRoutine> subRoutines = new ArrayList<>();
+        Stream<Routine> streamRoutines = routines.stream();
+        streamRoutines.forEach(routine ->{
+            subRoutines.addAll(subRoutineRepository.findByRoutine(routine));
+                }
+        );
+
         List<SubRoutineResponseDto> responseSubRoutine = new ArrayList<>();
         Stream<SubRoutine> stream = subRoutines.stream();
         stream.forEach(subRoutine -> {
@@ -47,24 +61,9 @@ public class SubRoutineService {
         return responseSubRoutine;
     }
 
-    public void join(Map<String, Object> headers, SubRoutineRegisterRequestDto request) throws ParseException {
-        String authorizationHeader = (String) headers.get("authorization");
-        String[] bearerHeader = authorizationHeader.split(" ");
-        String jwtToken = bearerHeader[1];
-
-        String subject = tokenUtils.getSubject(jwtToken);
-        String provider = tokenUtils.getIssuer(jwtToken);
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("provider", provider);
-        args.put("username", subject);
-
-        User user = userRepository
-                .findByUsernameAndProvider(
-                        (String) args.get("username"),
-                        (String) args.get("provider"))
-                .orElseThrow(() -> new UsernameNotFoundException("cannot find such user"));
-
+    public void join(SubRoutineRegisterRequestDto request) throws ParseException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByUsernameAndProvider(userDetails.getUsername(), userDetails.getProvider()).orElseThrow(() -> new RuntimeException("can not find user!"));
         Routine routine = routineRepository.findByNameAndUser(request.getRoutineName(), user).orElseThrow(() -> new UsernameNotFoundException("cannot find such user"));
         SubRoutine subRoutine = request.toEntity(routine);
         subRoutineRepository.save(subRoutine);

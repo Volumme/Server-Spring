@@ -1,5 +1,6 @@
 package Alpha.alphaspring.service;
 
+import Alpha.alphaspring.DTO.UserDetails;
 import Alpha.alphaspring.DTO.UserRegisterRequestDto;
 import Alpha.alphaspring.DTO.UserResponseDto;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
@@ -14,6 +15,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,19 +64,15 @@ public class UserService {
         return kakaoTokenUtils.validate(token);
     }
 
-    public void join(Map<String, Object> headers, UserRegisterRequestDto request) throws ParseException {
-        String authorizationHeader = (String) headers.get("authorization");
-        String[] bearerHeader = authorizationHeader.split(" ");
-        String jwtToken = bearerHeader[1];
+    public void join(UserRegisterRequestDto request) throws ParseException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userBefore = userRepository.findByUsernameAndProvider(userDetails.getUsername(), userDetails.getProvider()).orElseThrow(() -> new RuntimeException("can not find user!"));
 
-        String subject = tokenUtils.getSubject(jwtToken);
-        String provider = tokenUtils.getIssuer(jwtToken);
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("provider", provider);
-        args.put("username", subject);
-
-        User user = request.toEntity(args);
+        User user = request.toEntity(null);
+        user.setProvider(userBefore.getProvider());
+        user.setUsername(userBefore.getUsername());
+        user.setRefreshToken(userBefore.getRefreshToken());
+        user.setId(userBefore.getId());
 
         userRepository.save(user);
     }

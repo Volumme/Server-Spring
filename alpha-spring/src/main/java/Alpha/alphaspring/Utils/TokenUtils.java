@@ -16,5 +16,4 @@ public interface TokenUtils {
     String getClaim(String token, String key, String scope) throws ParseException;
     boolean validate(String token) throws ParseException, JwkException;
     OauthInfo getOauthInfo(String token) throws ParseException;
-    boolean supports(String token);
 }

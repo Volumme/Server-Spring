@@ -16,9 +16,4 @@ public class CommonTokenUtils extends AbstractTokenUtils{
         return null;
     }
 
-    @Override
-    public boolean supports(String token) {
-        return false;
-    }
-
 }

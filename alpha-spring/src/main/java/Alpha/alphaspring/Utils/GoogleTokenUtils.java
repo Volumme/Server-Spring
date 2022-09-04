@@ -82,15 +82,4 @@ public class GoogleTokenUtils extends AbstractTokenUtils{
                 .build();
     }
 
-    @Override
-    public boolean supports(String token){
-        try{
-            String issuer = getIssuer(token);
-            return "accounts.google.com".equals(issuer) ||
-                    "https://accounts.google.com".equals(issuer);
-        }catch (ParseException e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
-        }
-
-    }
 }

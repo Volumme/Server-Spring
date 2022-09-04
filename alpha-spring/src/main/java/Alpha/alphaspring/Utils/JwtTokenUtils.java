@@ -94,8 +94,4 @@ public class JwtTokenUtils extends AbstractTokenUtils {
                 .build();
     }
 
-    @Override
-    public boolean supports(String token) {
-        return false;
-    }
 }

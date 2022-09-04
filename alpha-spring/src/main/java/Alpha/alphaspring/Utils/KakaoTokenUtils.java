@@ -102,14 +102,4 @@ public class KakaoTokenUtils extends AbstractTokenUtils {
                 .build();
     }
 
-    @Override
-    public boolean supports(String token){
-        try{
-            String issuer = getIssuer(token);
-            return PROVIDER_KAKAO.equals(issuer);
-        }catch (ParseException e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
-        }
-    }
-
 }

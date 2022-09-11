@@ -1,5 +1,10 @@
 package Alpha.alphaspring.DTO;
 
 public interface IRequestDto<R, T> {
-    R toEntity(T args);
+    default R toEntity(T args){
+        return null;
+    };
+    default R toEntity(){
+        return null;
+    };
 }

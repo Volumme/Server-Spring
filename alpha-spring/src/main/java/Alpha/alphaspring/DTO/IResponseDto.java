@@ -6,6 +6,11 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface IResponseDto<R, T> {
-     R fromEntity(T args);
+     default R fromEntity() {
+          return null;
+     }
+     default  R fromEntity(T args){
+          return null;
+     }
 
 }

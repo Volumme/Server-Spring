@@ -11,7 +11,7 @@ import lombok.Setter;
 public class SubRoutineRegisterRequestDto implements IRequestDto<SubRoutine, Routine>{
 
     private String subRoutineName;
-    private String routineName;
+    private Long routineId;
 
     @Override
     public SubRoutine toEntity(Routine routine) {

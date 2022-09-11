@@ -36,8 +36,7 @@ public class RoutineService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
         String provider = userDetails.getProvider();
-        User user = userRepository.findByUsernameAndProvider(username, provider).orElseThrow(() -> new Exception("No user found"));
-        List<Routine> routines = routineRepository.findByUser(user);
+        List<Routine> routines = routineRepository.findByUser_UsernameAndUser_Provider(username, provider);
 
         List<RoutineResponseDto> responseRoutine = new ArrayList<>();
         Stream<Routine> stream = routines.stream();
@@ -54,5 +53,15 @@ public class RoutineService {
         routineRepository.save(routine);
     }
 
+    public List<RoutineResponseDto> findRecommendedRoutines() {
+        List<Routine> routines = routineRepository.findByIsRecommended(true);
+        List<RoutineResponseDto> responseRoutine = new ArrayList<>();
+        Stream<Routine> stream = routines.stream();
+        stream.forEach(routine -> {
+            responseRoutine.add(new RoutineResponseDto().fromEntity(routine));
+        });
+        return responseRoutine;
+
+    }
 }
 

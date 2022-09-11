@@ -64,4 +64,26 @@ public class RoutineController {
             return null;
         }
     }
+    @GetMapping("/subRoutine")
+    public List<SubRoutineResponseDto> findSubroutinesById(@RequestParam(value = "routineId") Long routineId){
+        try {
+            return subRoutineService.findSubRoutinesById(routineId);
+        }
+        catch (Exception e){
+            System.out.println("e = " + e);
+            return null;
+        }
+    }
+    @GetMapping("/routines/recommended")
+    public List<RoutineResponseDto> getRecommendRoutines(){
+        try{
+            return routineService.findRecommendedRoutines();
+        }catch (Exception e){
+            System.out.println("/routines/recommended:e = " + e);
+            return null;
+        }
+    }
+
+
+
 }

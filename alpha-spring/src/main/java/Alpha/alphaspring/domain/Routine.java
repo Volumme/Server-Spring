@@ -23,7 +23,11 @@ public class Routine{
     @Column(name = "name")
     private String name;
 
-//    @OneToMany(mappedBy = "routine")
-//    List<SubRoutine> subRoutines = new ArrayList<>();
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "is_recommended")
+    private boolean isRecommended;
+
 }
 

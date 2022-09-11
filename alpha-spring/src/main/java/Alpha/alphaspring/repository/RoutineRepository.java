@@ -12,12 +12,13 @@ import java.util.Optional;
 @Repository
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
     Routine save(Routine routine);
-    Optional<Routine> findById(String id);
+    Optional<Routine> findByIdAndUser(Long id, User user);
     Optional<Routine> findByName(String name);
     Optional<Routine> findByNameAndUser(String name, User user);
     List<Routine> findByUser(User user);
     List<Routine> findAll();
     Optional<Routine> findByUser_Id(Long Id);
     Optional<Routine> findByUser_Username(String username);
-
+    List<Routine> findByIsRecommended(boolean isRecommended);
+    List<Routine> findByUser_UsernameAndUser_Provider(String username, String provider);
 }

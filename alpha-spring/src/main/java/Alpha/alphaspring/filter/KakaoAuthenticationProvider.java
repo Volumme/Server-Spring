@@ -29,7 +29,7 @@ public class KakaoAuthenticationProvider implements AuthenticationProvider {
 
         String token = (String) authentication.getCredentials();
         try {
-            kakaoTokenUtils.validate(token);
+            if (!kakaoTokenUtils.validate(token)) return null;
             String id = kakaoTokenUtils.getOauthInfo(token).getUserId();
 
             UserDetails userDetails = UserDetails.builder()

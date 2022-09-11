@@ -30,7 +30,7 @@ public class GoogleAuthenticationProvider implements AuthenticationProvider {
 
         String token = (String) authentication.getCredentials();
         try {
-            googleTokenUtils.validate(token);
+            if (!googleTokenUtils.validate(token)) return null;
             String id = googleTokenUtils.getOauthInfo(token).getUserId();
 
             UserDetails userDetails = UserDetails.builder()

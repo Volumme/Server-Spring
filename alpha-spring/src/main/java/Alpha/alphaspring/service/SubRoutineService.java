@@ -39,19 +39,27 @@ public class SubRoutineService {
     @Autowired
     private KakaoTokenUtils kakaoTokenUtils;
 
+    public List<SubRoutineResponseDto> findSubRoutinesById(Long routineId) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        String provider = userDetails.getProvider();
+
+        List<SubRoutine> subRoutines = subRoutineRepository.findByRoutine_IdAndRoutine_User_UsernameAndRoutine_User_Provider(routineId, username, provider);
+
+        List<SubRoutineResponseDto> responseSubRoutine = new ArrayList<>();
+        Stream<SubRoutine> stream = subRoutines.stream();
+        stream.forEach(subRoutine -> {
+            responseSubRoutine.add(new SubRoutineResponseDto().fromEntity(subRoutine));
+        });
+        return responseSubRoutine;
+    }
+
     public List<SubRoutineResponseDto> findSubRoutines() throws Exception {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
         String provider = userDetails.getProvider();
-        User user = userRepository.findByUsernameAndProvider(username, provider).orElseThrow(() -> new Exception("No user found"));
-        List<Routine> routines = routineRepository.findByUser(user);
 
-        List<SubRoutine> subRoutines = new ArrayList<>();
-        Stream<Routine> streamRoutines = routines.stream();
-        streamRoutines.forEach(routine ->{
-            subRoutines.addAll(subRoutineRepository.findByRoutine(routine));
-                }
-        );
+        List<SubRoutine> subRoutines = subRoutineRepository.findByRoutine_User_UsernameAndRoutine_User_Provider(username, provider);
 
         List<SubRoutineResponseDto> responseSubRoutine = new ArrayList<>();
         Stream<SubRoutine> stream = subRoutines.stream();
@@ -64,7 +72,7 @@ public class SubRoutineService {
     public void join(SubRoutineRegisterRequestDto request) throws ParseException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsernameAndProvider(userDetails.getUsername(), userDetails.getProvider()).orElseThrow(() -> new RuntimeException("can not find user!"));
-        Routine routine = routineRepository.findByNameAndUser(request.getRoutineName(), user).orElseThrow(() -> new UsernameNotFoundException("cannot find such user"));
+        Routine routine = routineRepository.findByIdAndUser(request.getRoutineId(), user).orElseThrow(() -> new UsernameNotFoundException("cannot find such user that own specific routine"));
         SubRoutine subRoutine = request.toEntity(routine);
         subRoutineRepository.save(subRoutine);
     }

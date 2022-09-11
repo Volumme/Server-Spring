@@ -1,8 +1,10 @@
 package Alpha.alphaspring.filter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -61,8 +64,14 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
         String jwtToken = authHeaderValue[1];
 
-        Authentication authToken = this.authenticationManager.authenticate(new JwtAuthenticationToken(jwtToken));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        try{
+            Authentication authToken = this.authenticationManager.authenticate(new JwtAuthenticationToken(jwtToken));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        }catch (ResponseStatusException e){
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    return;
+        }
+
 
         chain.doFilter(request, response);
     }

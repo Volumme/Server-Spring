@@ -35,9 +35,6 @@ public class JwtTokenUtils extends AbstractTokenUtils {
                 .compact();
     }
 
-    public String refreshTokens(){
-        return null;
-    }
 
     private Claims getClaims(String token) {
         try{
@@ -55,6 +52,7 @@ public class JwtTokenUtils extends AbstractTokenUtils {
         } catch (ExpiredJwtException e) {
             System.out.println("e = " + e);
             System.out.println("Expired JWT token.");
+            throw e;
         } catch (UnsupportedJwtException e) {
             System.out.println("e = " + e);
             System.out.println("Unsupported JWT token.");
@@ -80,10 +78,8 @@ public class JwtTokenUtils extends AbstractTokenUtils {
     }
 
     @Override
-    public boolean validate(String token) throws ParseException, JwkException {
+    public boolean validate(String token) throws ParseException, JwkException, ExpiredJwtException {
         return getClaims(token) != null;
-//        String userId = (String) Objects.requireNonNull(claims).get("sub");
-//        String provider = (String) claims.get("iss");
     }
 
     @Override

@@ -70,7 +70,7 @@ public class SnsAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
             // 토큰 만들어주기
             JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
-            String accessToken = jwtTokenUtils.generateAccessToken(userDetails.getProvider(), userDetails.getUsername());
+            String accessToken = jwtTokenUtils.generateAccessToken(userDetails.getUsername(), userDetails.getProvider());
             String refreshToken = jwtTokenUtils.generateRefreshToken();
 
             // 디비에 토큰 + 유저 정보 저장

@@ -85,8 +85,8 @@ public class JwtTokenUtils extends AbstractTokenUtils {
     @Override
     public OauthInfo getOauthInfo(String token) throws ParseException {
         return OauthInfo.builder()
-                .userId(getIssuer(token))
-                .provider(getSubject(token))
+                .userId(getSubject(token))
+                .provider(getIssuer(token))
                 .build();
     }
 

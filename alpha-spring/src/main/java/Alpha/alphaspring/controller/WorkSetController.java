@@ -25,7 +25,7 @@ public class WorkSetController {
     }
 
     @GetMapping("/workSets")
-    public List<WorkSetResponseDto> findSubroutinesById(@RequestParam(value = "subRoutineId") Long subRoutineId){
+    public List<WorkSetResponseDto> findWorkSetById(@RequestParam(value = "subRoutineId") Long subRoutineId){
         try {
             return workSetService.findWorkSetById(subRoutineId);
         }

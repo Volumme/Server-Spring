@@ -1,13 +1,15 @@
 package Alpha.alphaspring.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Setter
 @Getter
+@Setter
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SubSet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

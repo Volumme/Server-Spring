@@ -45,7 +45,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void store_token(String tokens) throws ParseException {
+    public void storeToken(String tokens) throws ParseException {
 
         JSONParser parser = new JSONParser();
         JSONObject tokenObj = (JSONObject) parser.parse(tokens);

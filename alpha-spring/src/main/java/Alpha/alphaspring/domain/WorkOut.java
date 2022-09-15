@@ -1,21 +1,23 @@
 package Alpha.alphaspring.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Setter
 @Getter
+@Setter
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class WorkOut {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @Column(name = "machine_name")
@@ -23,8 +25,5 @@ public class WorkOut {
 
     @Column(name = "body_part")
     private String bodyPart;
-
-//    @OneToMany(mappedBy = "workOut")
-//    List<WorkSet> workSets = new ArrayList<>();
 }
 

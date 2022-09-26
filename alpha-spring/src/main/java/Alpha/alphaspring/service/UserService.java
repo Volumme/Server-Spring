@@ -77,8 +77,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserResponseDto findUser(String nickname) throws Exception {
+    public UserResponseDto findUserByNickname(String nickname) throws Exception {
         User user = userRepository.findByNickname(nickname).orElseThrow(() -> new Exception("error find by nickname"));
+        return new UserResponseDto().fromEntity(user);
+    }
+
+    public UserResponseDto findUserByToken(String token) throws Exception {
+        User user = userRepository.findByRefreshToken(token).orElseThrow(() -> new Exception("error find by refreshToken"));
         return new UserResponseDto().fromEntity(user);
     }
 

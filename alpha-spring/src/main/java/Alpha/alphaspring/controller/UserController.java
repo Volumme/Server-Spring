@@ -11,16 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class UserController {
@@ -74,9 +68,19 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public UserResponseDto findUser(@RequestParam(value = "nickname") String nickname){
+    public UserResponseDto findUserByNickname(@RequestParam(value = "nickname") String nickname){
         try {
-            return userService.findUser(nickname);
+            return userService.findUserByNickname(nickname);
+        }
+        catch (Exception e){
+            System.out.println("e = " + e);
+            return null;
+        }
+    }
+    @GetMapping("/user")
+    public UserResponseDto findUserByToken(@RequestParam(value = "refreshToken") String token){
+        try {
+            return userService.findUserByToken(token);
         }
         catch (Exception e){
             System.out.println("e = " + e);

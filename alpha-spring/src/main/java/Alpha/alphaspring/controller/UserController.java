@@ -77,7 +77,7 @@ public class UserController {
             return null;
         }
     }
-    @GetMapping("/user")
+    @GetMapping("/user/refreshToken")
     public UserResponseDto findUserByToken(@RequestParam(value = "refreshToken") String token){
         try {
             return userService.findUserByToken(token);

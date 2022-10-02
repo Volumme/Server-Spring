@@ -1,6 +1,6 @@
 package Alpha.alphaspring.service;
 
-import Alpha.alphaspring.DTO.FileDetail;
+import Alpha.alphaspring.DTO.FileDetails;
 import Alpha.alphaspring.Utils.AmazonS3Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,11 @@ public class S3Service {
     @Autowired
     private StaticURIService staticURIService;
 
-    public FileDetail save(String name, MultipartFile multipartFile) {
-        FileDetail fileDetail = FileDetail.multipartOf(multipartFile);
-        amazonS3Utils.store(fileDetail.getPath(), multipartFile);
-        staticURIService.save(name, fileDetail.getPath());
-        return fileDetail;
+    public FileDetails save(String name, MultipartFile multipartFile) {
+        FileDetails fileDetails = FileDetails.multipartOf(multipartFile);
+        amazonS3Utils.store(fileDetails.getPath(), multipartFile);
+        staticURIService.save(name, fileDetails.getPath());
+        return fileDetails;
     }
 
     public byte[] load(String uri) throws IOException {

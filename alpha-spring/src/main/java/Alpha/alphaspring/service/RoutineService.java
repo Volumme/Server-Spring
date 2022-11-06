@@ -46,6 +46,15 @@ public class RoutineService {
         return responseRoutine;
     }
 
+
+
+    public boolean isRoutineNameExist(String routinename) throws Exception{
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        List<Routine> routines = routineRepository.findByUser_UsernameAndName(username, routinename);
+        return !routines.isEmpty();
+    }
+
     public void join(RoutineRegisterRequestDto request) throws ParseException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsernameAndProvider(userDetails.getUsername(), userDetails.getProvider()).orElseThrow(() -> new RuntimeException("can not find user!"));
@@ -61,7 +70,16 @@ public class RoutineService {
             responseRoutine.add(new RoutineResponseDto().fromEntity(routine));
         });
         return responseRoutine;
+    }
 
+    public List<RoutineResponseDto> findRoutinesByDescription(String description) {
+        List<Routine> routines = routineRepository.findByDescription(description);
+        List<RoutineResponseDto> responseRoutine = new ArrayList<>();
+        Stream<Routine> stream = routines.stream();
+        stream.forEach(routine -> {
+            responseRoutine.add(new RoutineResponseDto().fromEntity(routine));
+        });
+        return responseRoutine;
     }
 }
 

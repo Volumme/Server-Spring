@@ -30,10 +30,14 @@ public class RoutineController {
     @PostMapping("/routine")
     public StringResponseDto postRoutine(
             @RequestBody RoutineRegisterRequestDto requestBody
-    ) throws ParseException {
+    ) throws Exception {
         System.out.println("requestBody = " + requestBody);
-        routineService.join(requestBody);
-        return new StringResponseDto("Routine Registered!!");
+        if (!routineService.isRoutineNameExist(requestBody.getName())){
+            routineService.join(requestBody);
+            return new StringResponseDto("Routine Registered!!");
+        }else{
+            return new StringResponseDto("Routine Already Exists");
+        }
     }
 
     @GetMapping("/routines")
@@ -83,7 +87,14 @@ public class RoutineController {
             return null;
         }
     }
-
-
+    @GetMapping("/routines/description")
+    public List<RoutineResponseDto> getRoutinesByDescription(@RequestParam(value = "description") String description){
+        try{
+            return routineService.findRoutinesByDescription(description);
+        }catch (Exception e){
+            System.out.println("/routines/description:e = " + e);
+            return null;
+        }
+    }
 
 }

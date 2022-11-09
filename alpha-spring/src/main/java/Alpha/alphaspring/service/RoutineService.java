@@ -81,5 +81,15 @@ public class RoutineService {
         });
         return responseRoutine;
     }
+
+    public List<RoutineResponseDto> findRoutinesByCategory(String category) {
+        List<Routine> routines = routineRepository.findByCategory(category);
+        List<RoutineResponseDto> responseRoutine = new ArrayList<>();
+        Stream<Routine> stream = routines.stream();
+        stream.forEach(routine -> {
+            responseRoutine.add(new RoutineResponseDto().fromEntity(routine));
+        });
+        return responseRoutine;
+    }
 }
 

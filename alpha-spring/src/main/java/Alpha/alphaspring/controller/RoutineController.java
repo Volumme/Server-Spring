@@ -96,5 +96,14 @@ public class RoutineController {
             return null;
         }
     }
+    @GetMapping("/routines/category")
+    public List<RoutineResponseDto> getRoutinesByCategory(@RequestParam(value = "category") String category){
+        try{
+            return routineService.findRoutinesByCategory(category);
+        }catch (Exception e){
+            System.out.println("/routines/description:e = " + e);
+            return null;
+        }
+    }
 
 }

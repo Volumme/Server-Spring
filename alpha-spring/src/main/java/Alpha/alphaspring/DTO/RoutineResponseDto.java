@@ -18,6 +18,8 @@ public class RoutineResponseDto implements IResponseDto<RoutineResponseDto, Rout
 
     private String description;
 
+    private String category;
+
     @Override
     public RoutineResponseDto fromEntity(Routine routine) {
         return RoutineResponseDto.builder()
@@ -25,6 +27,7 @@ public class RoutineResponseDto implements IResponseDto<RoutineResponseDto, Rout
                 .routineId(routine.getId())
                 .username(routine.getUser().getNickname())
                 .routineName(routine.getName())
+                .category(routine.getCategory())
                 .build()
                 ;
     }

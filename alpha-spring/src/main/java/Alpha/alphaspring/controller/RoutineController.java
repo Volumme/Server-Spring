@@ -32,7 +32,7 @@ public class RoutineController {
             @RequestBody RoutineRegisterRequestDto requestBody
     ) throws Exception {
         System.out.println("requestBody = " + requestBody);
-        if (!routineService.isRoutineNameExist(requestBody.getName(), requestBody.getDescription())){
+        if (!routineService.isRoutineNameExist(requestBody.getName(), requestBody.getCategory())){
             routineService.join(requestBody);
             return new StringResponseDto("Routine Registered!!");
         }else{

@@ -11,6 +11,7 @@ public class RoutineRegisterRequestDto implements IRequestDto<Routine, User>{
     private String name;
     private boolean isRecommended;
     private String description;
+    private String category;
     @Override
     public Routine toEntity(User user) {
         return Routine.builder()
@@ -18,6 +19,7 @@ public class RoutineRegisterRequestDto implements IRequestDto<Routine, User>{
                 .name(name)
                 .description(description)
                 .isRecommended(isRecommended)
+                .category(category)
                 .build();
     }
 }

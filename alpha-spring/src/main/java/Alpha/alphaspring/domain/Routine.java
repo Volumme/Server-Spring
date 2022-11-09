@@ -26,6 +26,9 @@ public class Routine{
     @Column(name = "description")
     private String description;
 
+    @Column(name = "category")
+    private String category;
+
     @Column(name = "is_recommended")
     private boolean isRecommended;
 

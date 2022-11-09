@@ -48,10 +48,10 @@ public class RoutineService {
 
 
 
-    public boolean isRoutineNameExist(String routinename) throws Exception{
+    public boolean isRoutineNameExist(String routinename, String category) throws Exception{
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
-        List<Routine> routines = routineRepository.findByUser_UsernameAndName(username, routinename);
+        List<Routine> routines = routineRepository.findByUser_UsernameAndNameAndDescription(username, routinename, category);
         return !routines.isEmpty();
     }
 

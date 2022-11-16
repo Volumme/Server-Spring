@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -71,7 +72,7 @@ public class AiController {
         return resultMap;
     }
     //callAPI
-    @GetMapping("/ai/count")
+    @PostMapping("/ai/count")
     public String getCount(
             @RequestBody AiCountRequestDto requestBody
     ) throws IOException {

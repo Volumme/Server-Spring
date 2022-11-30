@@ -40,11 +40,11 @@ public class SubRoutineService {
     private KakaoTokenUtils kakaoTokenUtils;
 
     public List<SubRoutineResponseDto> findSubRoutinesById(Long routineId) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-        String provider = userDetails.getProvider();
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String username = userDetails.getUsername();
+//        String provider = userDetails.getProvider();
 
-        List<SubRoutine> subRoutines = subRoutineRepository.findByRoutine_IdAndRoutine_User_UsernameAndRoutine_User_Provider(routineId, username, provider);
+        List<SubRoutine> subRoutines = subRoutineRepository.findByRoutine_Id(routineId);
 
         List<SubRoutineResponseDto> responseSubRoutine = new ArrayList<>();
         Stream<SubRoutine> stream = subRoutines.stream();

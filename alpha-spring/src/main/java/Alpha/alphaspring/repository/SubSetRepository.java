@@ -11,5 +11,4 @@ public interface SubSetRepository extends JpaRepository<SubSet, Long> {
     SubSet save(SubSet subSet);
     List<SubSet> findAll();
     List<SubSet> findByWorkSet_Id(Long id);
-
 }

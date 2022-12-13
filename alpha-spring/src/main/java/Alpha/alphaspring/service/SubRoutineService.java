@@ -1,16 +1,10 @@
 package Alpha.alphaspring.service;
 
-import Alpha.alphaspring.DTO.SubRoutineRegisterRequestDto;
-import Alpha.alphaspring.DTO.SubRoutineResponseDto;
-import Alpha.alphaspring.DTO.UserDetails;
+import Alpha.alphaspring.DTO.*;
 import Alpha.alphaspring.Utils.CommonTokenUtils;
 import Alpha.alphaspring.Utils.KakaoTokenUtils;
-import Alpha.alphaspring.domain.Routine;
-import Alpha.alphaspring.domain.SubRoutine;
-import Alpha.alphaspring.domain.User;
-import Alpha.alphaspring.repository.RoutineRepository;
-import Alpha.alphaspring.repository.SubRoutineRepository;
-import Alpha.alphaspring.repository.UserRepository;
+import Alpha.alphaspring.domain.*;
+import Alpha.alphaspring.repository.*;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +32,10 @@ public class SubRoutineService {
     private CommonTokenUtils tokenUtils;
     @Autowired
     private KakaoTokenUtils kakaoTokenUtils;
-
+    @Autowired
+    private WorkSetRepository workSetRepository;
+    @Autowired
+    private SubSetRepository subSetRepository;
     public List<SubRoutineResponseDto> findSubRoutinesById(Long routineId) {
 //        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        String username = userDetails.getUsername();
@@ -76,5 +73,23 @@ public class SubRoutineService {
         SubRoutine subRoutine = request.toEntity(routine);
         subRoutineRepository.save(subRoutine);
         return subRoutine.getId();
+    }
+
+    public List<SubRoutineResponseAllDto> findAllWorkSetById(long subRoutineId) {
+        List<WorkSet> workSetList = workSetRepository.findBySubRoutine_Id(subRoutineId);
+
+        List<SubRoutineResponseAllDto> responseWorkSets = new ArrayList<>();
+        Stream<WorkSet> stream = workSetList.stream();
+        stream.forEach(workSet -> {
+            List<SubSet> subSetList = subSetRepository.findByWorkSet_Id(workSet.getId());
+            List<SubSetResponseDto> responseSubSetList = new ArrayList<>();
+            Stream<SubSet> tmpStream = subSetList.stream();
+            tmpStream.forEach(subSet ->{
+                responseSubSetList.add(new SubSetResponseDto().fromEntity(subSet));
+            });
+
+            responseWorkSets.add(new SubRoutineResponseAllDto().fromEntity(workSet.getWorkOut().getName(),responseSubSetList));
+        });
+        return responseWorkSets;
     }
 }

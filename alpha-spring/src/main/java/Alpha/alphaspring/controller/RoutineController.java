@@ -106,4 +106,14 @@ public class RoutineController {
         }
     }
 
+    @GetMapping("/subRoutines/all")
+    public List<SubRoutineResponseAllDto> getAllWorkSetBySubRoutineId(@RequestParam(value = "subRoutineId")long subRoutineId){
+        try {
+            return subRoutineService.findAllWorkSetById(subRoutineId);
+        }
+        catch (Exception e){
+            System.out.println("e = " + e);
+            return null;
+        }
+    }
 }

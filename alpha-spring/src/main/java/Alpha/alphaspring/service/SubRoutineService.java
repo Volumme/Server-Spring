@@ -69,11 +69,12 @@ public class SubRoutineService {
         return responseSubRoutine;
     }
 
-    public void join(SubRoutineRegisterRequestDto request) throws ParseException {
+    public long join(SubRoutineRegisterRequestDto request) throws ParseException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsernameAndProvider(userDetails.getUsername(), userDetails.getProvider()).orElseThrow(() -> new RuntimeException("can not find user!"));
         Routine routine = routineRepository.findByIdAndUser(request.getRoutineId(), user).orElseThrow(() -> new UsernameNotFoundException("cannot find such user that own specific routine"));
         SubRoutine subRoutine = request.toEntity(routine);
         subRoutineRepository.save(subRoutine);
+        return subRoutine.getId();
     }
 }

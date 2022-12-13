@@ -36,8 +36,9 @@ public class WorkOutService {
         }
         return workOutRepository.findByMachineName(machine);
     }
-    public void join(WorkOutRegisterRequestDto request) throws ParseException{
+    public long join(WorkOutRegisterRequestDto request) throws ParseException{
         WorkOut workOut = request.toEntity();
         workOutRepository.save(workOut);
+        return workOut.getId();
     }
 }

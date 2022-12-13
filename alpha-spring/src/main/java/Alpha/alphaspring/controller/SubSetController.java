@@ -1,9 +1,6 @@
 package Alpha.alphaspring.controller;
 
-import Alpha.alphaspring.DTO.StringResponseDto;
-import Alpha.alphaspring.DTO.SubSetRegisterRequestDto;
-import Alpha.alphaspring.DTO.SubSetResponseDto;
-import Alpha.alphaspring.DTO.WorkSetResponseDto;
+import Alpha.alphaspring.DTO.*;
 import Alpha.alphaspring.service.SubSetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +13,11 @@ public class SubSetController {
     private SubSetService subSetService;
 
     @PostMapping("/subSet")
-    public StringResponseDto registerSubSet(
+    public IdResponseDto registerSubSet(
             @RequestBody SubSetRegisterRequestDto requestBody
             ) throws Exception{
-        subSetService.join(requestBody);
-        return new StringResponseDto("SubSet registered");
+        long id = subSetService.join(requestBody);
+        return new IdResponseDto(id);
     }
 
     @GetMapping("/subSets")

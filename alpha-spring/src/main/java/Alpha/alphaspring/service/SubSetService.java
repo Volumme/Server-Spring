@@ -29,10 +29,11 @@ public class SubSetService {
     @Autowired
     private WorkSetRepository workSetRepository;
 
-    public void join(SubSetRegisterRequestDto request) throws Exception {
+    public long join(SubSetRegisterRequestDto request) throws Exception {
         WorkSet workSet = workSetRepository.findById(request.getWorkSetId()).orElseThrow(() -> new Exception("no such workset id"));
         SubSet subSet = request.toEntity(workSet);
         subSetRepository.save(subSet);
+        return subSet.getId();
     }
 
     public List<SubSetResponseDto> findSubSetById(Long workSetId) throws Exception{

@@ -1,5 +1,6 @@
 package Alpha.alphaspring.controller;
 
+import Alpha.alphaspring.DTO.IdResponseDto;
 import Alpha.alphaspring.DTO.StringResponseDto;
 import Alpha.alphaspring.DTO.UserResponseDto;
 import Alpha.alphaspring.DTO.WorkOutRegisterRequestDto;
@@ -28,11 +29,11 @@ public class WorkOutController {
     }
 
     @PostMapping("/workout")
-    public StringResponseDto registerWorkOut(
+    public IdResponseDto registerWorkOut(
             @RequestBody WorkOutRegisterRequestDto requestBody
             ) throws ParseException {
-        workOutService.join(requestBody);
-        return new StringResponseDto("WorkOut registered!!");
+        long id = workOutService.join(requestBody);
+        return new IdResponseDto(id);
     }
 
     @GetMapping("/workout/bodypart")

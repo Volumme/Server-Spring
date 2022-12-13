@@ -28,11 +28,12 @@ public class WorkSetService {
     @Autowired
     private WorkOutRepository workOutRepository;
 
-    public void join(WorkSetRegisterRequestDto request) throws Exception {
+    public long join(WorkSetRegisterRequestDto request) throws Exception {
         SubRoutine subRoutine = subRoutineRepository.findById(request.getSubRoutineId()).orElseThrow(() -> new Exception("no such subroutine id"));
         WorkOut workOut = workOutRepository.findByName(request.getWorkOutName()).orElseThrow(() -> new Exception("no such workout name"));
         WorkSet workSet = request.toEntity(subRoutine, workOut);
         workSetRepository.save(workSet);
+        return workSet.getId();
     }
 
     public List<WorkSetResponseDto> findWorkSetById(Long subRoutineId) throws Exception{

@@ -55,11 +55,12 @@ public class RoutineService {
         return !routines.isEmpty();
     }
 
-    public void join(RoutineRegisterRequestDto request) throws ParseException {
+    public long join(RoutineRegisterRequestDto request) throws ParseException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsernameAndProvider(userDetails.getUsername(), userDetails.getProvider()).orElseThrow(() -> new RuntimeException("can not find user!"));
         Routine routine = request.toEntity(user);
         routineRepository.save(routine);
+        return routine.getId();
     }
 
     public List<RoutineResponseDto> findRecommendedRoutines() {

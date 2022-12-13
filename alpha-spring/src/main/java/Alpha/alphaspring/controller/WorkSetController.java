@@ -1,9 +1,6 @@
 package Alpha.alphaspring.controller;
 
-import Alpha.alphaspring.DTO.StringResponseDto;
-import Alpha.alphaspring.DTO.SubRoutineResponseDto;
-import Alpha.alphaspring.DTO.WorkSetRegisterRequestDto;
-import Alpha.alphaspring.DTO.WorkSetResponseDto;
+import Alpha.alphaspring.DTO.*;
 import Alpha.alphaspring.service.WorkSetService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +14,11 @@ public class WorkSetController {
     private WorkSetService workSetService;
 
     @PostMapping("/workSet")
-    public StringResponseDto registerWorkSet(
+    public IdResponseDto registerWorkSet(
             @RequestBody WorkSetRegisterRequestDto requestBody
     ) throws Exception {
-        workSetService.join(requestBody);
-        return new StringResponseDto("WorkSet registered");
+        long id = workSetService.join(requestBody);
+        return new IdResponseDto(id);
     }
 
     @GetMapping("/workSets")

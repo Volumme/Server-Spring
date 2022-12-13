@@ -28,15 +28,15 @@ public class RoutineController {
     }
 
     @PostMapping("/routine")
-    public StringResponseDto postRoutine(
+    public IdResponseDto postRoutine(
             @RequestBody RoutineRegisterRequestDto requestBody
     ) throws Exception {
         System.out.println("requestBody = " + requestBody);
         if (!routineService.isRoutineNameExist(requestBody.getName(), requestBody.getCategory())){
-            routineService.join(requestBody);
-            return new StringResponseDto("Routine Registered!!");
+            long id = routineService.join(requestBody);
+            return new IdResponseDto(id);
         }else{
-            return new StringResponseDto("Routine Already Exists");
+            return new IdResponseDto(-1);
         }
     }
 
@@ -51,12 +51,12 @@ public class RoutineController {
     }
 
     @PostMapping("/subRoutine")
-    public StringResponseDto postSubRoutine(
+    public IdResponseDto postSubRoutine(
             @RequestBody SubRoutineRegisterRequestDto requestBody
     ) throws ParseException {
         System.out.println("requestBody = " + requestBody);
-        subRoutineService.join(requestBody);
-        return new StringResponseDto("SubRoutine Registered!!");
+        long id = subRoutineService.join(requestBody);
+        return new IdResponseDto(id);
     }
 
     @GetMapping("/subRoutines")

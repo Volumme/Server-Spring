@@ -32,7 +32,6 @@ public class StaticController {
             @RequestPart("name")String name
             ){
         return ResponseEntity.ok(s3Service.save(name, multipartFile));
-
     }
 
     @GetMapping("/statics")
